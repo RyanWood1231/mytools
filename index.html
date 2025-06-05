@@ -55,28 +55,26 @@
     body.light-mode .tool-card a {
       color: #007acc;
     }
-    #themeToggleBtn, #langToggleBtn, #authorBtn {
+
+    /* 新增按钮容器，水平排列 */
+    #buttonContainer {
       position: fixed;
       top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 10px; /* 按钮之间间距 */
+      z-index: 1000;
+    }
+    #buttonContainer button {
       padding: 0.5rem 1rem;
       border: none;
       border-radius: 20px;
       cursor: pointer;
       font-weight: bold;
       transition: background 0.3s, color 0.3s;
-      z-index: 1000;
     }
-    #themeToggleBtn {
-      right: 20px;
-      background: #61dafb;
-      color: #0f1117;
-    }
-    body.light-mode #themeToggleBtn {
-      background: #007acc;
-      color: #fff;
-    }
+
     #langToggleBtn {
-      right: 140px;
       background: #888;
       color: #fff;
     }
@@ -84,8 +82,15 @@
       background: #555;
       color: #eee;
     }
+    #themeToggleBtn {
+      background: #61dafb;
+      color: #0f1117;
+    }
+    body.light-mode #themeToggleBtn {
+      background: #007acc;
+      color: #fff;
+    }
     #authorBtn {
-      right: 80px;
       background: #444;
       color: #fff;
     }
@@ -93,6 +98,7 @@
       background: #222;
       color: #eee;
     }
+
     /* 模态框样式 */
     #authorModal {
       display: none;
@@ -137,9 +143,11 @@
   </style>
 </head>
 <body>
-  <button id="themeToggleBtn" onclick="toggleTheme()">切换主题</button>
-  <button id="langToggleBtn" onclick="toggleLanguage()">English</button>
-  <button id="authorBtn" onclick="openAuthorModal()">作者信息</button>
+  <div id="buttonContainer">
+    <button id="langToggleBtn" onclick="toggleLanguage()">English</button>
+    <button id="themeToggleBtn" onclick="toggleTheme()">切换主题</button>
+    <button id="authorBtn" onclick="openAuthorModal()">作者信息</button>
+  </div>
   
   <h1 id="pageTitle">我的工具站</h1>
   
@@ -210,7 +218,7 @@
         document.getElementById('langToggleBtn').textContent = '中文';
         document.getElementById('themeToggleBtn').textContent = 'Toggle Theme';
         document.getElementById('authorBtn').textContent = 'Author Info';
-        document.getElementById('authorTitle').textContent = 'About the Author';
+        document.getElementById('authorTitle').textContent = 'About Author';
         document.getElementById('authorText').textContent = 'Hi, this is Ryan.';
       } else {
         currentLang = 'cn';
@@ -228,7 +236,6 @@
       Array.from(cards).forEach(card => {
         card.querySelector('.tool-title').textContent = (currentLang === 'cn' ? card.dataset.titleCn : card.dataset.titleEn);
         card.querySelector('.tool-desc').textContent = (currentLang === 'cn' ? card.dataset.descCn : card.dataset.descEn);
-        // 链接文字这里保持不变，也可以根据语言调整
       });
       filterTools(); // 重新过滤，防止显示错误
     }
