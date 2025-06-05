@@ -11,11 +11,25 @@
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 2rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.light-mode {
+      background-color: #f5f5f5;
+      color: #222;
     }
     h1 {
       text-align: center;
       font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 0.5rem;
       margin-bottom: 2rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      box-sizing: border-box;
     }
     .tool-card {
       background: #1c1f26;
@@ -23,6 +37,12 @@
       padding: 1.5rem;
       margin-bottom: 1rem;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      transition: background 0.3s, color 0.3s;
+    }
+    body.light-mode .tool-card {
+      background: #ffffff;
+      color: #222;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     .tool-card h2 {
       margin: 0;
@@ -30,12 +50,38 @@
     .tool-card a {
       color: #61dafb;
       text-decoration: none;
+      transition: color 0.3s;
+    }
+    body.light-mode .tool-card a {
+      color: #007acc;
+    }
+    #themeToggleBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #61dafb;
+      border: none;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      color: #0f1117;
+      transition: background 0.3s, color 0.3s;
+      z-index: 1000;
+    }
+    body.light-mode #themeToggleBtn {
+      background: #007acc;
+      color: #fff;
     }
   </style>
 </head>
 <body>
+  <button id="themeToggleBtn" onclick="toggleTheme()">切换主题</button>
+  
   <h1>我的工具站</h1>
   
+  <input type="text" id="searchInput" placeholder="搜索工具..." oninput="filterTools()" />
+
   <div class="tool-card">
     <h2>🔧 Excel自动整理工具</h2>
     <p>用于整理数据，去除空行并格式化。</p>
@@ -54,5 +100,33 @@
     <p><a href="https://ryanwood1231.github.io/Order-Tracking/" target="_blank">在线使用工具 🚀</a></p>
   </div>
 
+  <script>
+    function filterTools() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.getElementsByClassName('tool-card');
+      Array.from(cards).forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(input) ? 'block' : 'none';
+      });
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+      // 保存用户偏好到localStorage
+      if(document.body.classList.contains('light-mode')) {
+        localStorage.setItem('theme', 'light');
+      } else {
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    // 页面加载时，读取用户主题偏好
+    window.onload = function() {
+      const theme = localStorage.getItem('theme');
+      if(theme === 'light') {
+        document.body.classList.add('light-mode');
+      }
+    }
+  </script>
 </body>
 </html>
