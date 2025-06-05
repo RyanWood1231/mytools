@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -55,64 +55,145 @@
     body.light-mode .tool-card a {
       color: #007acc;
     }
-    #themeToggleBtn {
+    #themeToggleBtn, #langToggleBtn, #authorBtn {
       position: fixed;
       top: 20px;
-      right: 20px;
-      background: #61dafb;
+      padding: 0.5rem 1rem;
       border: none;
       border-radius: 20px;
-      padding: 0.5rem 1rem;
       cursor: pointer;
       font-weight: bold;
-      color: #0f1117;
       transition: background 0.3s, color 0.3s;
       z-index: 1000;
+    }
+    #themeToggleBtn {
+      right: 20px;
+      background: #61dafb;
+      color: #0f1117;
     }
     body.light-mode #themeToggleBtn {
       background: #007acc;
       color: #fff;
     }
+    #langToggleBtn {
+      right: 140px;
+      background: #888;
+      color: #fff;
+    }
+    body.light-mode #langToggleBtn {
+      background: #555;
+      color: #eee;
+    }
+    #authorBtn {
+      right: 80px;
+      background: #444;
+      color: #fff;
+    }
+    body.light-mode #authorBtn {
+      background: #222;
+      color: #eee;
+    }
+    /* 模态框样式 */
+    #authorModal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6);
+    }
+    #authorModal.light-mode {
+      background-color: rgba(255,255,255,0.8);
+    }
+    #authorModalContent {
+      background-color: #1c1f26;
+      margin: 10% auto;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      color: #e3e3e3;
+      position: relative;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    #authorModal.light-mode #authorModalContent {
+      background-color: #fff;
+      color: #222;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    #authorClose {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: inherit;
+      cursor: pointer;
+    }
+    #authorClose:hover {
+      color: #61dafb;
+    }
   </style>
 </head>
 <body>
   <button id="themeToggleBtn" onclick="toggleTheme()">切换主题</button>
+  <button id="langToggleBtn" onclick="toggleLanguage()">English</button>
+  <button id="authorBtn" onclick="openAuthorModal()">作者信息</button>
   
-  <h1>我的工具站</h1>
+  <h1 id="pageTitle">我的工具站</h1>
   
   <input type="text" id="searchInput" placeholder="搜索工具..." oninput="filterTools()" />
 
-  <div class="tool-card">
-    <h2>🔧 Excel自动整理工具</h2>
-    <p>用于整理数据，去除空行并格式化。</p>
-    <p><a href="https://github.com/yourusername/excel-cleanup-tool" target="_blank">敬请期待</a></p>
+  <div class="tool-card" data-title-cn="Excel自动整理工具" data-desc-cn="用于整理数据，去除空行并格式化。" 
+       data-title-en="Excel Cleanup Tool" data-desc-en="Organize data, remove blank lines and format.">
+    <h2 class="tool-title">🔧 Excel自动整理工具</h2>
+    <p class="tool-desc">用于整理数据，去除空行并格式化。</p>
+    <p><a href="https://github.com/yourusername/excel-cleanup-tool" target="_blank" class="tool-link">查看源码</a></p>
   </div>
 
-  <div class="tool-card">
-    <h2>🐍 Python根据关键词文件批量复制</h2>
-    <p>根据关键词批量复制文件到指定文件夹的小工具。</p>
-    <p><a href="https://mytools-d4exbdecqsrzidtgsmoy7e.streamlit.app/" target="_blank">在线打开工具 🚀</a></p>
+  <div class="tool-card" data-title-cn="Python根据关键词文件批量复制" data-desc-cn="根据关键词批量复制文件到指定文件夹的小工具。"
+       data-title-en="Python Batch File Copier" data-desc-en="Copy files by keywords in batch to target folder.">
+    <h2 class="tool-title">🐍 Python根据关键词文件批量复制</h2>
+    <p class="tool-desc">根据关键词批量复制文件到指定文件夹的小工具。</p>
+    <p><a href="https://mytools-d4exbdecqsrzidtgsmoy7e.streamlit.app/" target="_blank" class="tool-link">在线打开工具 🚀</a></p>
   </div>
 
-  <div class="tool-card">
-    <h2>📦 订单追踪工具</h2>
-    <p>输入订单号并查询当前状态的网页小工具。</p>
-    <p><a href="https://ryanwood1231.github.io/Order-Tracking/" target="_blank">在线使用工具 🚀</a></p>
+  <div class="tool-card" data-title-cn="订单追踪工具" data-desc-cn="输入订单号并查询当前状态的网页小工具。"
+       data-title-en="Order Tracking Tool" data-desc-en="Input order number to track status.">
+    <h2 class="tool-title">📦 订单追踪工具</h2>
+    <p class="tool-desc">输入订单号并查询当前状态的网页小工具。</p>
+    <p><a href="https://ryanwood1231.github.io/Order-Tracking/" target="_blank" class="tool-link">在线使用工具 🚀</a></p>
+  </div>
+
+  <!-- 作者信息模态框 -->
+  <div id="authorModal" onclick="if(event.target==this) closeAuthorModal()">
+    <div id="authorModalContent">
+      <span id="authorClose" onclick="closeAuthorModal()" title="关闭">&times;</span>
+      <h2 id="authorTitle">关于作者</h2>
+      <p id="authorText">
+        这里是作者的介绍。您可以写一些关于您的信息，比如联系方式、经验、项目等。
+      </p>
+    </div>
   </div>
 
   <script>
+    let currentLang = 'cn';
+
     function filterTools() {
       const input = document.getElementById('searchInput').value.toLowerCase();
       const cards = document.getElementsByClassName('tool-card');
       Array.from(cards).forEach(card => {
-        const text = card.innerText.toLowerCase();
+        const title = currentLang === 'cn' ? card.dataset.titleCn.toLowerCase() : card.dataset.titleEn.toLowerCase();
+        const desc = currentLang === 'cn' ? card.dataset.descCn.toLowerCase() : card.dataset.descEn.toLowerCase();
+        const text = title + " " + desc;
         card.style.display = text.includes(input) ? 'block' : 'none';
       });
     }
 
     function toggleTheme() {
       document.body.classList.toggle('light-mode');
-      // 保存用户偏好到localStorage
+      document.getElementById('authorModal').classList.toggle('light-mode');
       if(document.body.classList.contains('light-mode')) {
         localStorage.setItem('theme', 'light');
       } else {
@@ -120,12 +201,56 @@
       }
     }
 
-    // 页面加载时，读取用户主题偏好
+    function toggleLanguage() {
+      if(currentLang === 'cn') {
+        currentLang = 'en';
+        document.documentElement.lang = 'en';
+        document.getElementById('pageTitle').textContent = 'My Tools';
+        document.getElementById('searchInput').placeholder = 'Search tools...';
+        document.getElementById('langToggleBtn').textContent = '中文';
+        document.getElementById('themeToggleBtn').textContent = 'Toggle Theme';
+        document.getElementById('authorBtn').textContent = 'Author Info';
+        document.getElementById('authorTitle').textContent = 'About the Author';
+        document.getElementById('authorText').textContent = 'Hi, this is Ryan.';
+      } else {
+        currentLang = 'cn';
+        document.documentElement.lang = 'zh-CN';
+        document.getElementById('pageTitle').textContent = '我的工具站';
+        document.getElementById('searchInput').placeholder = '搜索工具...';
+        document.getElementById('langToggleBtn').textContent = 'English';
+        document.getElementById('themeToggleBtn').textContent = '切换主题';
+        document.getElementById('authorBtn').textContent = '作者信息';
+        document.getElementById('authorTitle').textContent = '关于作者';
+        document.getElementById('authorText').textContent = '嗨，这里是Ryan。';
+      }
+      // 更新工具卡文本
+      const cards = document.getElementsByClassName('tool-card');
+      Array.from(cards).forEach(card => {
+        card.querySelector('.tool-title').textContent = (currentLang === 'cn' ? card.dataset.titleCn : card.dataset.titleEn);
+        card.querySelector('.tool-desc').textContent = (currentLang === 'cn' ? card.dataset.descCn : card.dataset.descEn);
+        // 链接文字这里保持不变，也可以根据语言调整
+      });
+      filterTools(); // 重新过滤，防止显示错误
+    }
+
+    function openAuthorModal() {
+      document.getElementById('authorModal').style.display = 'block';
+    }
+    function closeAuthorModal() {
+      document.getElementById('authorModal').style.display = 'none';
+    }
+
+    // 初始化主题和语言
     window.onload = function() {
+      // 主题记忆
       const theme = localStorage.getItem('theme');
       if(theme === 'light') {
         document.body.classList.add('light-mode');
+        document.getElementById('authorModal').classList.add('light-mode');
       }
+
+      // 默认语言为中文
+      toggleLanguage(); // 调用一次设置文本
     }
   </script>
 </body>
