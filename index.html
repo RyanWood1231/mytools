@@ -236,8 +236,7 @@
       Array.from(cards).forEach(card => {
         card.querySelector('.tool-title').textContent = (currentLang === 'cn' ? card.dataset.titleCn : card.dataset.titleEn);
         card.querySelector('.tool-desc').textContent = (currentLang === 'cn' ? card.dataset.descCn : card.dataset.descEn);
-      });
-              // 更新链接文字
+        // 更新链接文字
         const link = card.querySelector('.tool-link');
         if (link) {
           if (link.classList.contains('link-source')) {
@@ -248,8 +247,7 @@
             link.textContent = currentLang === 'cn' ? '在线打开工具 🚀' : 'Open Tool 🚀';
           }
         }
-      filterTools(); // 重新过滤，防止显示错误
-    }
+      });
 
     function openAuthorModal() {
       document.getElementById('authorModal').style.display = 'block';
