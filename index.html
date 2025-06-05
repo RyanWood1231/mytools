@@ -157,21 +157,21 @@
        data-title-en="Excel Cleanup Tool" data-desc-en="Organize data, remove blank lines and format.">
     <h2 class="tool-title">🔧 Excel自动整理工具</h2>
     <p class="tool-desc">用于整理数据，去除空行并格式化。</p>
-    <p><a href="https://github.com/yourusername/excel-cleanup-tool" target="_blank" class="tool-link">查看源码</a></p>
+    <p><a href="https://github.com/yourusername/excel-cleanup-tool" target="_blank" class="tool-link link-source">查看源码</a></p>
   </div>
 
   <div class="tool-card" data-title-cn="Python根据关键词文件批量复制" data-desc-cn="根据关键词批量复制文件到指定文件夹的小工具。"
        data-title-en="Python Batch File Copier" data-desc-en="Copy files by keywords in batch to target folder.">
     <h2 class="tool-title">🐍 Python根据关键词文件批量复制</h2>
     <p class="tool-desc">根据关键词批量复制文件到指定文件夹的小工具。</p>
-    <p><a href="https://mytools-d4exbdecqsrzidtgsmoy7e.streamlit.app/" target="_blank" class="tool-link">在线打开工具 🚀</a></p>
+    <p><a href="https://mytools-d4exbdecqsrzidtgsmoy7e.streamlit.app/" target="_blank" class="tool-link linke-open">在线打开工具 🚀</a></p>
   </div>
 
   <div class="tool-card" data-title-cn="订单追踪工具" data-desc-cn="输入订单号并查询当前状态的网页小工具。"
        data-title-en="Order Tracking Tool" data-desc-en="Input order number to track status.">
     <h2 class="tool-title">📦 订单追踪工具</h2>
     <p class="tool-desc">输入订单号并查询当前状态的网页小工具。</p>
-    <p><a href="https://ryanwood1231.github.io/Order-Tracking/" target="_blank" class="tool-link">在线使用工具 🚀</a></p>
+    <p><a href="https://ryanwood1231.github.io/Order-Tracking/" target="_blank" class="tool-link link-launch">在线使用工具 🚀</a></p>
   </div>
 
   <!-- 作者信息模态框 -->
@@ -237,6 +237,17 @@
         card.querySelector('.tool-title').textContent = (currentLang === 'cn' ? card.dataset.titleCn : card.dataset.titleEn);
         card.querySelector('.tool-desc').textContent = (currentLang === 'cn' ? card.dataset.descCn : card.dataset.descEn);
       });
+              // 更新链接文字
+        const link = card.querySelector('.tool-link');
+        if (link) {
+          if (link.classList.contains('link-source')) {
+            link.textContent = currentLang === 'cn' ? '查看源码' : 'View Source';
+          } else if (link.classList.contains('link-launch')) {
+            link.textContent = currentLang === 'cn' ? '在线使用工具 🚀' : 'Launch Tool 🚀';
+          } else if (link.classList.contains('link-open')) {
+            link.textContent = currentLang === 'cn' ? '在线打开工具 🚀' : 'Open Tool 🚀';
+          }
+        }
       filterTools(); // 重新过滤，防止显示错误
     }
 
