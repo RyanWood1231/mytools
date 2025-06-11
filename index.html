@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>我的工具站</title>
+  
   <style>
     body {
       background-color: #0f1117;
@@ -30,6 +31,10 @@
       border: none;
       font-size: 1rem;
       box-sizing: border-box;
+    }
+    .logo-img {
+      height: 50px;
+      max-width: 100%;
     }
     .tool-card {
       background: #1c1f26;
@@ -143,6 +148,7 @@
   </style>
 </head>
 <body>
+  <img src="logo.png" alt="Logo" class="logo-img">
   <div id="buttonContainer">
     <button id="langToggleBtn" onclick="toggleLanguage()">English</button>
     <button id="themeToggleBtn" onclick="toggleTheme()">切换主题</button>
