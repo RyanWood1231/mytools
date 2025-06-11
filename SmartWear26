@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>26度穿衣助手</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+  body {
+    margin: 0; padding: 0;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: 'Orbitron', sans-serif;
+    color: #00ffea;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  header {
+    margin: 40px 0 20px;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #00fff0;
+  }
+  form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  input[type="text"], input[type="number"] {
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 200px;
+    background: #082026;
+    color: #00fff0;
+    box-shadow: 0 0 5px #00fff0;
+    transition: box-shadow 0.3s ease;
+  }
+  input[type="text"]:focus, input[type="number"]:focus {
+    box-shadow: 0 0 15px #00ffea;
+  }
+  button {
+    background: #00fff0;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 18px;
+    font-weight: bold;
+    color: #003f3f;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00fff0;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #00cfcf;
+  }
+  #result, #manualResult {
+    max-width: 600px;
+    background: rgba(0, 255, 234, 0.1);
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #00fff0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .loading {
+    font-size: 1.2rem;
+    color: #00ccbb;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .highlight {
+    color: #00ffd6;
+    font-weight: 700;
+  }
+  #log {
+    max-width: 600px;
+    background: #112d33;
+    color: #00aa88;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    min-height: 50px;
+  }
+  h3.section-title {
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #00fff0;
+    padding-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+  <header>26度穿衣助手</header>
+
+  <section>
+    <h3 class="section-title">城市天气查询</h3>
+    <form id="cityForm">
+      <input type="text" id="cityInput" placeholder="输入城市名称" required />
+      <button type="submit">查询天气</button>
+    </form>
+    <div id="result"></div>
+  </section>
+
+  <section>
+    <h3 class="section-title">手动输入气温</h3>
+    <form id="manualForm">
+      <input type="number" id="manualTemp" placeholder="输入气温 (℃)" required />
+      <button type="submit">获取穿衣推荐</button>
+    </form>
+    <div id="manualResult"></div>
+  </section>
+
+  <section>
+    <h3 class="section-title">调试日志</h3>
+    <div id="log">无日志信息</div>
+  </section>
+
+<script>
+  const API_KEY = "babfe44b42344638810133005240407";
+  const targetTemp = 26;
+
+  const clothes = [
+    {name: "短袖T恤", val: 1},
+    {name: "长袖T恤", val: 1.5},
+    {name: "针织开衫", val: 2},
+    {name: "卫衣", val: 3},
+    {name: "薄外套", val: 3},
+    {name: "厚毛衣", val: 4},
+    {name: "抓绒衣", val: 5},
+    {name: "薄呢外套", val: 5},
+    {name: "厚羽绒服", val: 9},
+    {name: "棉服", val: 6},
+    {name: "薄裤子", val: 1},
+    {name: "加绒裤", val: 3},
+    {name: "羽绒裤", val: 5},
+    {name: "围巾", val: 1},
+    {name: "厚围巾", val: 2},
+    {name: "帽子", val: 1},
+    {name: "厚帽子", val: 2}
+  ];
+
+  function logMsg(msg) {
+    const logDiv = document.getElementById('log');
+    logDiv.textContent = msg;
+  }
+
+  function getCombinations(temperature, maxItems=5) {
+    const needWarmth = targetTemp - temperature;
+    let combos = [];
+
+    function backtrack(start, path, warmthSum) {
+      if(path.length > maxItems) return;
+      if(Math.abs(warmthSum - needWarmth) <= 1) {
+        combos.push({items: [...path], total: warmthSum});
+      }
+      for(let i = start; i < clothes.length; i++) {
+        path.push(clothes[i]);
+        backtrack(i + 1, path, warmthSum + clothes[i].val);
+        path.pop();
+      }
+    }
+
+    backtrack(0, [], 0);
+    combos.sort((a,b) => Math.abs(a.total - needWarmth) - Math.abs(b.total - needWarmth));
+    return combos.slice(0,3);
+  }
+
+  async function fetchWeather(city) {
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${encodeURIComponent(city)}&days=1&aqi=no&alerts=no`;
+    try {
+      const res = await fetch(url);
+      logMsg(`API 返回状态码: ${res.status}`);
+      if(!res.ok) throw new Error(`获取天气失败，状态码: ${res.status}`);
+      const data = await res.json();
+
+      const forecast = data.forecast.forecastday[0].day;
+      const min_temp = forecast.mintemp_c;
+      const max_temp = forecast.maxtemp_c;
+      const rain_probability = parseInt(forecast.daily_chance_of_rain, 10);
+
+      return { min_temp, max_temp, rain_probability };
+    } catch (e) {
+      logMsg(`请求错误: ${e.message}`);
+      throw e;
+    }
+  }
+
+  function renderResult(city, min_temp, max_temp, rain_probability, combos, targetWarmth) {
+    const avg_temp = (min_temp + max_temp) / 2;
+    let rainText = `降雨概率：${rain_probability}%。`;
+
+    let raining = rain_probability > 50;
+
+    let html = `<h2>${city} 今日气温范围: <span class="highlight">${min_temp.toFixed(1)}℃ - ${max_temp.toFixed(1)}℃</span></h2>`;
+    html += `<p>${rainText}</p>`;
+    html += `<p>目标保暖值 ≈ <span class="highlight">${targetWarmth.toFixed(1)}</span>℃</p>`;
+    html += `<h3>推荐穿衣组合：</h3><ul>`;
+    combos.forEach((combo, i) => {
+      const itemsStr = combo.items.map(c => c.name).join(" + ");
+      html += `<li><strong>方案${i+1}:</strong> ${itemsStr} ，总保暖值: ${combo.total.toFixed(1)}℃</li>`;
+    });
+    html += `</ul>`;
+    if(raining){
+      html += `<p style="color:#ff6666;font-weight:bold;">提示：降雨概率较高，建议携带雨具和防水外套！</p>`;
+    }
+    document.getElementById('result').innerHTML = html;
+  }
+
+  function renderManualResult(temp) {
+    const raining = false; // 手动输入不涉及降雨
+    const targetWarmth = targetTemp - temp;
+    const combos = getCombinations(temp);
+    let html = `<h2>输入气温: <span class="highlight">${temp.toFixed(1)}℃</span></h2>`;
+    html += `<p>无降雨信息，默认天气干爽。</p>`;
+    html += `<p>目标保暖值 ≈ <span class="highlight">${targetWarmth.toFixed(1)}</span>℃</p>`;
+    html += `<h3>推荐穿衣组合：</h3><ul>`;
+    combos.forEach((combo, i) => {
+      const itemsStr = combo.items.map(c => c.name).join(" + ");
+      html += `<li><strong>方案${i+1}:</strong> ${itemsStr} ，总保暖值: ${combo.total.toFixed(1)}℃</li>`;
+    });
+    html += `</ul>`;
+    document.getElementById('manualResult').innerHTML = html;
+  }
+
+  document.getElementById('cityForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const city = document.getElementById('cityInput').value.trim();
+    const resultDiv = document.getElementById('result');
+    if(!city) return;
+    resultDiv.innerHTML = '<p class="loading">加载中，请稍候...</p>';
+    try {
+      const { min_temp, max_temp, rain_probability } = await fetchWeather(city);
+      const avg_temp = (min_temp + max_temp) / 2;
+      const raining = rain_probability > 50;
+      let adjustedTemp = avg_temp;
+      if(raining) adjustedTemp -= 1; // 小幅调整降雨带来的体感降温
+      const targetWarmth = targetTemp - adjustedTemp + (raining ? 1 : 0);
+      const combos = getCombinations(adjustedTemp);
+      renderResult(city, min_temp, max_temp, rain_probability, combos, targetWarmth);
+    } catch (err) {
+      resultDiv.innerHTML = `<p style="color:#ff5555;">${err.message}</p>`;
+    }
+  });
+
+  document.getElementById('manualForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const tempInput = document.getElementById('manualTemp');
+    const val = parseFloat(tempInput.value);
+    if(isNaN(val)) return;
+    renderManualResult(val);
+  });
+</script>
+</body>
+</html>
