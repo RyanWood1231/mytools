@@ -30,62 +30,49 @@
 </div>
 
 <script>
-const API_ENDPOINT = "https://ai-excel-automation.onrender.com/excel-ai";
-
-async function submitAI() {
-  const prompt = document.getElementById("promptInput").value.trim();
-  if (!prompt) {
-    alert("请输入指令内容");
-    return;
+  async function submitAI() {
+      const prompt = document.getElementById("promptInput").value.trim();
+      const fileInput = document.getElementById("fileInput");
+      const resultBox = document.getElementById("resultBox");
+  
+      if (!prompt) {
+          resultBox.textContent = "❌ 请先输入指令";
+          return;
+      }
+  
+      resultBox.textContent = "⏳ 正在处理，请稍候...";
+  
+      const url = "https://ai-excel-automation.onrender.com/excel-ai";
+  
+      try {
+          let formData = new FormData();
+          formData.append("prompt", prompt);
+  
+          // 如果用户上传了 Excel 文件
+          if (fileInput.files.length > 0) {
+              formData.append("file", fileInput.files[0]);
+          }
+  
+          const response = await fetch(url, {
+              method: "POST",
+              body: formData
+          });
+  
+          if (!response.ok) {
+              resultBox.textContent = `❌ API 返回错误状态码 ${response.status}`;
+              return;
+          }
+  
+          const data = await response.json();
+          // 假设后端返回 JSON 中包含 result 字段
+          resultBox.textContent = data.result || JSON.stringify(data, null, 2);
+  
+      } catch (error) {
+          resultBox.textContent = `❌ 请求异常: ${error}`;
+      }
   }
-
-  const fileEl = document.getElementById("fileInput");
-  const hasFile = fileEl.files.length > 0;
-
-  document.getElementById("resultBox").textContent = "处理中，请稍候...";
-
-  try {
-    let response;
-
-    if (hasFile) {
-      // 上传 Excel + 指令
-      const formData = new FormData();
-      formData.append("file", fileEl.files[0]);
-      formData.append("prompt", prompt);
-
-      response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        body: formData
-      });
-
-      // 返回 Excel 文件
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = "AI_Processed.xlsx";
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.getElementById("resultBox").textContent = "Excel 处理完成，已下载。";
-
-    } else {
-      // 仅文本处理
-      response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt })
-      });
-
-      const data = await response.json();
-      document.getElementById("resultBox").textContent = data.result || data.answer || JSON.stringify(data);
-    }
-
-  } catch (err) {
-    console.error(err);
-    document.getElementById("resultBox").textContent = "处理失败，请稍后重试。";
-  }
-}
-</script>
+  </script>
+  
 
 </body>
 </html>
