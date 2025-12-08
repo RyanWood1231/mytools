@@ -9,7 +9,6 @@
   h1 { text-align:center; }
   .box { background:#1c1f26; padding:20px; border-radius:12px; max-width:600px; margin:20px auto; box-shadow:0 0 10px rgba(0,0,0,0.5);}
   textarea { width:100%; height:120px; padding:10px; border-radius:10px; border:none; margin-bottom:15px; font-size:1rem; resize:vertical;}
-  input[type="file"] { margin-bottom:15px; }
   button { padding:10px 20px; font-size:1rem; border:none; border-radius:8px; cursor:pointer; background:#61dafb; color:#000; font-weight:bold; }
   #resultBox { margin-top:20px; padding:15px; background:#222; border-radius:10px; white-space:pre-wrap; }
 </style>
@@ -22,9 +21,6 @@
   <h2>输入指令（必填）</h2>
   <textarea id="promptInput" placeholder="示例：请帮我删除空行，并按日期排序"></textarea>
 
-  <h2>上传 Excel（可选）</h2>
-  <input type="file" id="fileInput" accept=".xlsx,.xls" />
-
   <button onclick="submitAI()">提交处理</button>
   <div id="resultBox"></div>
 </div>
@@ -32,47 +28,39 @@
 <script>
   async function submitAI() {
       const prompt = document.getElementById("promptInput").value.trim();
-      const fileInput = document.getElementById("fileInput");
       const resultBox = document.getElementById("resultBox");
-  
+
       if (!prompt) {
           resultBox.textContent = "❌ 请先输入指令";
           return;
       }
-  
+
       resultBox.textContent = "⏳ 正在处理，请稍候...";
-  
+
       const url = "https://ai-excel-automation.onrender.com/excel-ai";
-  
+
       try {
-          let formData = new FormData();
-          formData.append("prompt", prompt);
-  
-          // 如果用户上传了 Excel 文件
-          if (fileInput.files.length > 0) {
-              formData.append("file", fileInput.files[0]);
-          }
-  
           const response = await fetch(url, {
               method: "POST",
-              body: formData
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ prompt })
           });
-  
+
           if (!response.ok) {
               resultBox.textContent = `❌ API 返回错误状态码 ${response.status}`;
               return;
           }
-  
+
           const data = await response.json();
-          // 假设后端返回 JSON 中包含 result 字段
           resultBox.textContent = data.result || JSON.stringify(data, null, 2);
-  
+
       } catch (error) {
           resultBox.textContent = `❌ 请求异常: ${error}`;
       }
   }
-  </script>
-  
+</script>
 
 </body>
 </html>
