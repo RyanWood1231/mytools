@@ -1,134 +1,89 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <title>AI Excel 处理工具</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      background: #0f1117;
-      color: #e3e3e3;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
-    }
-    h1 { text-align: center; }
-    .box {
-      background: #1c1f26;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 600px;
-      margin: 20px auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-    textarea {
-      width: 100%;
-      height: 120px;
-      padding: 10px;
-      border-radius: 10px;
-      border: none;
-      margin-bottom: 15px;
-      font-size: 1rem;
-      resize: vertical;
-    }
-    input[type="file"] {
-      margin-bottom: 15px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #61dafb;
-      color: #000;
-      font-weight: bold;
-    }
-    #resultBox {
-      margin-top: 20px;
-      padding: 15px;
-      background: #222;
-      border-radius: 10px;
-      white-space: pre-wrap;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>AI Excel 处理工具</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body { background:#0f1117; color:#e3e3e3; font-family: 'Segoe UI', sans-serif; padding:20px; }
+  h1 { text-align:center; }
+  .box { background:#1c1f26; padding:20px; border-radius:12px; max-width:600px; margin:20px auto; box-shadow:0 0 10px rgba(0,0,0,0.5);}
+  textarea { width:100%; height:120px; padding:10px; border-radius:10px; border:none; margin-bottom:15px; font-size:1rem; resize:vertical;}
+  input[type="file"] { margin-bottom:15px; }
+  button { padding:10px 20px; font-size:1rem; border:none; border-radius:8px; cursor:pointer; background:#61dafb; color:#000; font-weight:bold; }
+  #resultBox { margin-top:20px; padding:15px; background:#222; border-radius:10px; white-space:pre-wrap; }
+</style>
 </head>
 <body>
 
 <h1>📊 AI Excel 自动处理工具</h1>
 
 <div class="box">
-
-  <h2>方式 1：输入AI指令（无需上传 Excel）</h2>
-
+  <h2>输入指令（必填）</h2>
   <textarea id="promptInput" placeholder="示例：请帮我删除空行，并按日期排序"></textarea>
-  <button onclick="sendPrompt()">提交指令</button>
 
-  <div id="resultBox"></div>
-
-</div>
-
-<div class="box">
-
-  <h2>方式 2：上传 Excel 文件处理</h2>
-
+  <h2>上传 Excel（可选）</h2>
   <input type="file" id="fileInput" accept=".xlsx,.xls" />
-  <button onclick="uploadExcel()">上传并处理 Excel</button>
 
+  <button onclick="submitAI()">提交处理</button>
+  <div id="resultBox"></div>
 </div>
 
 <script>
 const API_ENDPOINT = "https://ai-excel-automation.onrender.com/excel-ai";
 
-/* 方式 1：发送文本指令 */
-async function sendPrompt() {
-  const prompt = document.getElementById("promptInput").value;
-  if (!prompt.trim()) {
-    alert("请输入你的AI指令");
+async function submitAI() {
+  const prompt = document.getElementById("promptInput").value.trim();
+  if (!prompt) {
+    alert("请输入指令内容");
     return;
   }
+
+  const fileEl = document.getElementById("fileInput");
+  const hasFile = fileEl.files.length > 0;
 
   document.getElementById("resultBox").textContent = "处理中，请稍候...";
 
-  const response = await fetch(API_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      mode: "prompt",
-      prompt: prompt
-    })
-  });
+  try {
+    let response;
 
-  const data = await response.json();
-  document.getElementById("resultBox").textContent = data.result || "无返回内容";
-}
+    if (hasFile) {
+      // 上传 Excel + 指令
+      const formData = new FormData();
+      formData.append("file", fileEl.files[0]);
+      formData.append("prompt", prompt);
 
+      response = await fetch(API_ENDPOINT, {
+        method: "POST",
+        body: formData
+      });
 
-/* 方式 2：上传 Excel 文件 */
-async function uploadExcel() {
-  const fileEl = document.getElementById("fileInput");
-  if (!fileEl.files.length) {
-    alert("请先选择一个 Excel 文件");
-    return;
+      // 返回 Excel 文件
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "AI_Processed.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.getElementById("resultBox").textContent = "Excel 处理完成，已下载。";
+
+    } else {
+      // 仅文本处理
+      response = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+
+      const data = await response.json();
+      document.getElementById("resultBox").textContent = data.result || data.answer || JSON.stringify(data);
+    }
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("resultBox").textContent = "处理失败，请稍后重试。";
   }
-
-  const formData = new FormData();
-  formData.append("file", fileEl.files[0]);
-
-  const response = await fetch(API_ENDPOINT, {
-    method: "POST",
-    body: formData
-  });
-
-  // 返回的是 Excel 文件 → 转成 Blob 下载
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = "AI_Processed.xlsx";
-  a.click();
-
-  window.URL.revokeObjectURL(url);
 }
 </script>
 
