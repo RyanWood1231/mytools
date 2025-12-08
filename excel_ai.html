@@ -2,64 +2,77 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<title>AI Excel 处理工具</title>
+<title>AI Excel 对话工具</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
   body { background:#0f1117; color:#e3e3e3; font-family: 'Segoe UI', sans-serif; padding:20px; }
   h1 { text-align:center; }
-  .box { background:#1c1f26; padding:20px; border-radius:12px; max-width:600px; margin:20px auto; box-shadow:0 0 10px rgba(0,0,0,0.5);}
-  textarea { width:100%; height:120px; padding:10px; border-radius:10px; border:none; margin-bottom:15px; font-size:1rem; resize:vertical;}
+  .chat-box { max-width:600px; margin:20px auto; padding:20px; background:#1c1f26; border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,0.5); }
+  #chatHistory { max-height:400px; overflow-y:auto; margin-bottom:15px; }
+  .message { margin-bottom:10px; padding:8px 12px; border-radius:10px; }
+  .user { background:#61dafb; color:#000; text-align:right; }
+  .ai { background:#333; color:#fff; text-align:left; }
+  textarea { width:100%; height:80px; padding:10px; border-radius:10px; border:none; resize:vertical; margin-bottom:10px; font-size:1rem; }
   button { padding:10px 20px; font-size:1rem; border:none; border-radius:8px; cursor:pointer; background:#61dafb; color:#000; font-weight:bold; }
-  #resultBox { margin-top:20px; padding:15px; background:#222; border-radius:10px; white-space:pre-wrap; }
 </style>
 </head>
 <body>
 
-<h1>📊 AI Excel 自动处理工具</h1>
+<h1>🤖 AI Excel 对话工具</h1>
 
-<div class="box">
-  <h2>输入指令（必填）</h2>
-  <textarea id="promptInput" placeholder="示例：请帮我删除空行，并按日期排序"></textarea>
-
-  <button onclick="submitAI()">提交处理</button>
-  <div id="resultBox"></div>
+<div class="chat-box">
+  <div id="chatHistory"></div>
+  <textarea id="promptInput" placeholder="请输入指令..."></textarea>
+  <button onclick="sendMessage()">发送</button>
 </div>
 
 <script>
-  async function submitAI() {
-      const prompt = document.getElementById("promptInput").value.trim();
-      const resultBox = document.getElementById("resultBox");
+const chatHistoryDiv = document.getElementById("chatHistory");
+let chatHistory = []; // 存储对话记录，每条记录 {role: "user"/"ai", content: "文本"}
 
-      if (!prompt) {
-          resultBox.textContent = "❌ 请先输入指令";
-          return;
-      }
+async function sendMessage() {
+    const prompt = document.getElementById("promptInput").value.trim();
+    if (!prompt) return;
 
-      resultBox.textContent = "⏳ 正在处理，请稍候...";
+    // 1️⃣ 显示用户消息
+    chatHistory.push({role: "user", content: prompt});
+    updateChatUI();
+    document.getElementById("promptInput").value = "";
 
-      const url = "https://ai-excel-automation.onrender.com/excel-ai";
+    // 2️⃣ 准备请求
+    const url = "https://ai-excel-automation.onrender.com/excel-ai";
+    const messages = chatHistory.map(m => ({role: m.role, content: m.content}));
 
-      try {
-          const response = await fetch(url, {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json"
-              },
-              body: JSON.stringify({ prompt })
-          });
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({prompt})
+        });
 
-          if (!response.ok) {
-              resultBox.textContent = `❌ API 返回错误状态码 ${response.status}`;
-              return;
-          }
+        if (!response.ok) {
+            chatHistory.push({role: "ai", content: `❌ API 错误 ${response.status}`});
+            updateChatUI();
+            return;
+        }
 
-          const data = await response.json();
-          resultBox.textContent = data.result || JSON.stringify(data, null, 2);
+        const data = await response.json();
+        chatHistory.push({role: "ai", content: data.result || "未返回结果"});
+        updateChatUI();
 
-      } catch (error) {
-          resultBox.textContent = `❌ 请求异常: ${error}`;
-      }
-  }
+    } catch (error) {
+        chatHistory.push({role: "ai", content: `❌ 请求异常: ${error}`});
+        updateChatUI();
+    }
+}
+
+// 更新对话 UI
+function updateChatUI() {
+    chatHistoryDiv.innerHTML = chatHistory.map(m => 
+        `<div class="message ${m.role}">${m.content}</div>`
+    ).join("");
+    chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+}
 </script>
 
 </body>
