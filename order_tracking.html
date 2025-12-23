@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>订单追踪系统</title>
   <style>
     :root {
@@ -33,6 +34,7 @@
       display: flex;
       justify-content: flex-end;
       margin-bottom: 1.5rem;
+      gap: .5rem;
     }
 
     .top-bar button {
@@ -44,6 +46,7 @@
       color: var(--bg-color);
       cursor: pointer;
       margin-left: 0.5rem;
+      font-weight: 700;
     }
 
     h1 {
@@ -69,7 +72,7 @@
     input {
       padding: 0.5rem;
       width: 100%;
-      max-width: 300px;
+      max-width: 360px;
       border-radius: 6px;
       border: none;
       margin-bottom: 1rem;
@@ -88,32 +91,47 @@
     button.track-btn:hover {
       background-color: var(--button-hover);
     }
+
+    .hint {
+      margin-top: .75rem;
+      font-size: .9rem;
+      opacity: .85;
+      line-height: 1.4;
+    }
+
+    .small {
+      font-size: .85rem;
+      opacity: .75;
+    }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    <button onclick="toggleTheme()">切换主题</button>
+    <button type="button" onclick="toggleTheme()">切换主题</button>
   </div>
 
   <h1>📦 订单追踪系统</h1>
 
   <div class="tool-card">
     <label for="dhl-input">DHL 运单号：</label>
-    <input type="text" id="dhl-input" placeholder="请输入 DHL 单号">
-    <button class="track-btn" onclick="track('DHL')">查询</button>
+    <input type="text" id="dhl-input" placeholder="请输入 DHL 单号" autocomplete="off">
+    <button class="track-btn" type="button" onclick="track('DHL')">查询</button>
+    <div class="hint small">支持回车直接查询</div>
   </div>
 
   <div class="tool-card">
     <label for="tnt-input">TNT 运单号：</label>
-    <input type="text" id="tnt-input" placeholder="请输入 TNT 单号">
-    <button class="track-btn" onclick="track('TNT')">查询</button>
+    <input type="text" id="tnt-input" placeholder="请输入 TNT 单号" autocomplete="off">
+    <button class="track-btn" type="button" onclick="track('TNT')">查询</button>
+    <div class="hint small">支持回车直接查询</div>
   </div>
 
   <div class="tool-card">
     <label for="db-input">DB 运单号：</label>
-    <input type="text" id="db-input" placeholder="请输入 DB 单号">
-    <button class="track-btn" onclick="track('DB')">查询</button>
+    <input type="text" id="db-input" placeholder="请输入 DB 单号" autocomplete="off">
+    <button class="track-btn" type="button" onclick="track('DB')">查询</button>
+    <div class="hint small">支持回车直接查询</div>
   </div>
 
   <script>
@@ -130,9 +148,57 @@
       }
     })();
 
-    function track(carrier) {
-      alert('查询 ' + carrier + ' 单号功能待实现。');
+    // 不同承运商的“官网查询地址”生成器
+    // 说明：有的官网支持把单号直接带到 URL，有的不支持也会打开查询页面
+    const TRACK_URL = {
+      DHL: (no) => `https://www.dhl.com/global-en/home/tracking/tracking-express.html?tracking-id=${encodeURIComponent(no)}`,
+      TNT: (no) => `https://www.tnt.com/express/en_gb/site/shipping-tools/tracking.html?searchType=con&cons=${encodeURIComponent(no)}`,
+      DB:  (no) => `https://eschenker.dbschenker.com/app/tracking-public/`
+    };
+
+    // 输入清洗：去掉空格
+    function getTrackingNumber(inputId) {
+      const el = document.getElementById(inputId);
+      return (el.value || '').trim().replace(/\s+/g, '');
     }
+
+    function track(carrier) {
+      const inputMap = { DHL: 'dhl-input', TNT: 'tnt-input', DB: 'db-input' };
+      const inputId = inputMap[carrier];
+      const trackingNo = getTrackingNumber(inputId);
+
+      if (!trackingNo) {
+        alert('请先输入运单号再查询。');
+        document.getElementById(inputId).focus();
+        return;
+      }
+
+      const makeUrl = TRACK_URL[carrier];
+      if (!makeUrl) {
+        alert('暂不支持该承运商。');
+        return;
+      }
+
+      const url = makeUrl(trackingNo);
+
+      // 新窗口打开，避免用户丢失本站
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    // 支持回车查询
+    function bindEnter(inputId, carrier) {
+      const el = document.getElementById(inputId);
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          track(carrier);
+        }
+      });
+    }
+
+    bindEnter('dhl-input', 'DHL');
+    bindEnter('tnt-input', 'TNT');
+    bindEnter('db-input', 'DB');
   </script>
 </body>
 </html>
