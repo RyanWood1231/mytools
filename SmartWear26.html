@@ -125,7 +125,6 @@
   </section>
 
 <script>
-  const API_KEY = "babfe44b42344638810133005240407";
   const targetTemp = 26;
 
   const clothes = [
@@ -175,7 +174,7 @@
   }
 
   async function fetchWeather(city) {
-    const url = `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${encodeURIComponent(city)}&days=1&aqi=no&alerts=no`;
+    const url = `/api/weather?city=${encodeURIComponent(city)}`;
     try {
       const res = await fetch(url);
       logMsg(`API 返回状态码: ${res.status}`);
