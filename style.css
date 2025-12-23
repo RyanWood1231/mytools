@@ -1,0 +1,148 @@
+body {
+  background-color: #0f1117;
+  color: #e3e3e3;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 2rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.light-mode {
+  background-color: #f5f5f5;
+  color: #222;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.tool-card {
+  background: #1c1f26;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  transition: background 0.3s, color 0.3s;
+}
+
+body.light-mode .tool-card {
+  background: #ffffff;
+  color: #222;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.tool-card h2 { margin: 0; }
+
+.tool-card a.tool-link {
+  color: #61dafb;
+  text-decoration: none;
+  transition: color 0.3s, opacity 0.2s;
+  font-weight: 600;
+}
+
+body.light-mode .tool-card a.tool-link {
+  color: #007acc;
+}
+
+/* disabled / coming soon */
+.tool-card a.tool-link.disabled {
+  pointer-events: none;
+  opacity: 0.55;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* 顶部按钮容器 */
+#buttonContainer {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+
+#buttonContainer button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s, color 0.3s;
+}
+
+#langToggleBtn { background: #888; color: #fff; }
+body.light-mode #langToggleBtn { background: #555; color: #eee; }
+
+#themeToggleBtn { background: #61dafb; color: #0f1117; }
+body.light-mode #themeToggleBtn { background: #007acc; color: #fff; }
+
+#authorBtn { background: #444; color: #fff; }
+body.light-mode #authorBtn { background: #222; color: #eee; }
+
+/* 模态框 */
+#authorModal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
+}
+
+#authorModal.light-mode {
+  background-color: rgba(255,255,255,0.8);
+}
+
+#authorModalContent {
+  background-color: #1c1f26;
+  margin: 10% auto;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  color: #e3e3e3;
+  position: relative;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#authorModal.light-mode #authorModalContent {
+  background-color: #fff;
+  color: #222;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#authorClose {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: inherit;
+  cursor: pointer;
+}
+
+#authorClose:hover {
+  color: #61dafb;
+}
+
+@media (max-width: 640px) {
+  body { padding-top: 5rem; }
+  #buttonContainer { top: 12px; left: 12px; }
+  h1 { font-size: 2rem; }
+}
