@@ -157,11 +157,11 @@
     let combos = [];
 
     function backtrack(start, path, warmthSum) {
-      if(path.length > maxItems) return;
-      if(Math.abs(warmthSum - needWarmth) <= 1) {
-        combos.push({items: [...path], total: warmthSum});
+      if (path.length > maxItems) return;
+      if (Math.abs(warmthSum - needWarmth) <= 1) {
+        combos.push({ items: [...path], total: warmthSum });
       }
-      for(let i = start; i < clothes.length; i++) {
+      for (let i = start; i < clothes.length; i++) {
         path.push(clothes[i]);
         backtrack(i + 1, path, warmthSum + clothes[i].val);
         path.pop();
@@ -170,23 +170,73 @@
 
     backtrack(0, [], 0);
     combos.sort((a,b) => Math.abs(a.total - needWarmth) - Math.abs(b.total - needWarmth));
-    return combos.slice(0,3);
+    return combos.slice(0, 3);
   }
 
+  // --- ✅ Open-Meteo：城市 -> 经纬度 ---
+  async function geocodeCity(city) {
+    const geoUrl =
+      `https://geocoding-api.open-meteo.com/v1/search` +
+      `?name=${encodeURIComponent(city)}` +
+      `&count=1&language=zh&format=json`;
+
+    const res = await fetch(geoUrl);
+    logMsg(`Geocoding 状态码: ${res.status}`);
+    if (!res.ok) throw new Error(`城市解析失败，状态码: ${res.status}`);
+
+    const data = await res.json();
+    if (!data.results || data.results.length === 0) {
+      throw new Error("未找到该城市，请尝试更具体的名称（如：北京/上海/深圳）");
+    }
+
+    const r = data.results[0];
+    return {
+      name: r.name,
+      admin1: r.admin1,
+      country: r.country,
+      latitude: r.latitude,
+      longitude: r.longitude
+    };
+  }
+
+  // --- ✅ Open-Meteo：经纬度 -> 今日预报（不需要 key） ---
   async function fetchWeather(city) {
-    const url = `/api/weather?city=${encodeURIComponent(city)}`;
     try {
-      const res = await fetch(url);
-      logMsg(`API 返回状态码: ${res.status}`);
-      if(!res.ok) throw new Error(`获取天气失败，状态码: ${res.status}`);
+      // 1) 城市转经纬度
+      const loc = await geocodeCity(city);
+
+      // 2) 拉今日 min/max 与降水概率（daily）
+      const forecastUrl =
+        `https://api.open-meteo.com/v1/forecast` +
+        `?latitude=${loc.latitude}` +
+        `&longitude=${loc.longitude}` +
+        `&daily=temperature_2m_min,temperature_2m_max,precipitation_probability_max` +
+        `&timezone=auto`;
+
+      const res = await fetch(forecastUrl);
+      logMsg(`Forecast 状态码: ${res.status}`);
+      if (!res.ok) throw new Error(`获取天气失败，状态码: ${res.status}`);
+
       const data = await res.json();
 
-      const forecast = data.forecast.forecastday[0].day;
-      const min_temp = forecast.mintemp_c;
-      const max_temp = forecast.maxtemp_c;
-      const rain_probability = parseInt(forecast.daily_chance_of_rain, 10);
+      const daily = data.daily;
+      if (!daily || !daily.temperature_2m_min || !daily.temperature_2m_max) {
+        throw new Error("天气数据格式异常（daily 缺失）");
+      }
 
-      return { min_temp, max_temp, rain_probability };
+      const min_temp = Number(daily.temperature_2m_min[0]);
+      const max_temp = Number(daily.temperature_2m_max[0]);
+
+      // 有些地区/模型可能不给降水概率，做个兜底
+      let rain_probability = daily.precipitation_probability_max
+        ? Number(daily.precipitation_probability_max[0])
+        : 0;
+      if (!Number.isFinite(rain_probability)) rain_probability = 0;
+
+      // 返回“更完整的城市显示名”
+      const displayCity = [loc.name, loc.admin1, loc.country].filter(Boolean).join(" · ");
+
+      return { city: displayCity, min_temp, max_temp, rain_probability };
     } catch (e) {
       logMsg(`请求错误: ${e.message}`);
       throw e;
@@ -194,9 +244,7 @@
   }
 
   function renderResult(city, min_temp, max_temp, rain_probability, combos, targetWarmth) {
-    const avg_temp = (min_temp + max_temp) / 2;
     let rainText = `降雨概率：${rain_probability}%。`;
-
     let raining = rain_probability > 50;
 
     let html = `<h2>${city} 今日气温范围: <span class="highlight">${min_temp.toFixed(1)}℃ - ${max_temp.toFixed(1)}℃</span></h2>`;
@@ -208,14 +256,13 @@
       html += `<li><strong>方案${i+1}:</strong> ${itemsStr} ，总保暖值: ${combo.total.toFixed(1)}℃</li>`;
     });
     html += `</ul>`;
-    if(raining){
+    if (raining) {
       html += `<p style="color:#ff6666;font-weight:bold;">提示：降雨概率较高，建议携带雨具和防水外套！</p>`;
     }
     document.getElementById('result').innerHTML = html;
   }
 
   function renderManualResult(temp) {
-    const raining = false; // 手动输入不涉及降雨
     const targetWarmth = targetTemp - temp;
     const combos = getCombinations(temp);
     let html = `<h2>输入气温: <span class="highlight">${temp.toFixed(1)}℃</span></h2>`;
@@ -232,19 +279,24 @@
 
   document.getElementById('cityForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const city = document.getElementById('cityInput').value.trim();
+    const cityInput = document.getElementById('cityInput');
+    const city = cityInput.value.trim();
     const resultDiv = document.getElementById('result');
-    if(!city) return;
+    if (!city) return;
+
     resultDiv.innerHTML = '<p class="loading">加载中，请稍候...</p>';
+
     try {
-      const { min_temp, max_temp, rain_probability } = await fetchWeather(city);
+      const { city: displayCity, min_temp, max_temp, rain_probability } = await fetchWeather(city);
+
       const avg_temp = (min_temp + max_temp) / 2;
       const raining = rain_probability > 50;
       let adjustedTemp = avg_temp;
-      if(raining) adjustedTemp -= 1; // 小幅调整降雨带来的体感降温
+      if (raining) adjustedTemp -= 1;
       const targetWarmth = targetTemp - adjustedTemp + (raining ? 1 : 0);
+
       const combos = getCombinations(adjustedTemp);
-      renderResult(city, min_temp, max_temp, rain_probability, combos, targetWarmth);
+      renderResult(displayCity, min_temp, max_temp, rain_probability, combos, targetWarmth);
     } catch (err) {
       resultDiv.innerHTML = `<p style="color:#ff5555;">${err.message}</p>`;
     }
@@ -254,7 +306,7 @@
     e.preventDefault();
     const tempInput = document.getElementById('manualTemp');
     const val = parseFloat(tempInput.value);
-    if(isNaN(val)) return;
+    if (isNaN(val)) return;
     renderManualResult(val);
   });
 </script>
