@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>关于我</title>
+  <link rel="icon" href="Logo.png" type="image/png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="tool-page">
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html" aria-label="Home">
+        <span class="brand__dot" aria-hidden="true"></span>
+        <span id="brandText">Ryan • Automation</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Primary">
+        <a id="navTools" href="index.html#tools">Tools</a>
+        <a id="navAbout" href="about.html">About</a>
+        <a id="navContact" href="index.html#contact">Contact</a>
+      </nav>
+
+      <div class="topbar__actions">
+        <button id="langToggleBtn" class="pill" type="button">English</button>
+        <button id="themeToggleBtn" class="pill" type="button">切换主题</button>
+        <button id="authorBtn" class="pill pill--solid" type="button">作者信息</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="tool-shell">
+    <div class="tool-surface--light tool-surface">
+      <h1 id="aboutPageTitle" style="margin:0 0 10px; font-size:42px; letter-spacing:-.6px;">关于我</h1>
+      <p style="margin:0; color:rgba(17,24,39,.70); line-height:1.7; max-width:72ch;">
+        这个页面是给你“填内容”的结构模板：每个区块都留了提示，你可以逐步补充。中文/英文切换时，标题与提示会自动切换；正文你可以写双语或只写一种。
+      </p>
+    </div>
+
+    <div style="height:14px"></div>
+
+    <section class="tool-surface--light tool-surface" id="intro">
+      <h2 id="aboutIntroTitle" style="margin:0 0 8px;">一句话介绍</h2>
+      <p id="aboutIntroHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(你可以在这里写：我是谁 + 我擅长什么 + 我能带来什么结果)</p>
+      <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; color:rgba(17,24,39,.60);">
+        在这里写正文：例如你的岗位/行业背景、专注方向、你做自动化的理念与价值。
+      </div>
+    </section>
+
+    <div style="height:14px"></div>
+
+    <section class="tool-surface--light tool-surface" id="skills">
+      <h2 id="aboutSkillsTitle" style="margin:0 0 8px;">技能与工具栈</h2>
+      <p id="aboutSkillsHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(示例：VBA/Excel、Power Automate、Python、HTML/CSS、Power BI 等)</p>
+      <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px;">
+        <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">Category 1<br/><span style="color:rgba(17,24,39,.60); font-size:13px;">列出技能点</span></div>
+        <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">Category 2<br/><span style="color:rgba(17,24,39,.60); font-size:13px;">列出技能点</span></div>
+        <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">Category 3<br/><span style="color:rgba(17,24,39,.60); font-size:13px;">列出技能点</span></div>
+      </div>
+    </section>
+
+    <div style="height:14px"></div>
+
+    <section class="tool-surface--light tool-surface" id="highlights">
+      <h2 id="aboutHighlightsTitle" style="margin:0 0 8px;">代表性成果</h2>
+      <p id="aboutHighlightsHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(示例：节省工时、减少错误、自动化覆盖范围等)</p>
+      <ul style="margin:0; padding-left:18px; line-height:1.9; color:rgba(17,24,39,.70);">
+        <li>成果 1（量化结果更好：节省 X 小时/周，减少 X% 错误）</li>
+        <li>成果 2</li>
+        <li>成果 3</li>
+      </ul>
+    </section>
+
+    <div style="height:14px"></div>
+
+    <section class="tool-surface--light tool-surface" id="journey">
+      <h2 id="aboutJourneyTitle" style="margin:0 0 8px;">学习与经历</h2>
+      <p id="aboutJourneyHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(用时间线写：开始 → 项目 → 成长)</p>
+      <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; color:rgba(17,24,39,.70); line-height:1.8;">
+        <strong>202X</strong>：开始接触 VBA / 自动化<br/>
+        <strong>202X</strong>：落地某个自动化项目（写结果）<br/>
+        <strong>202X</strong>：开始用 Power Automate / Python 扩展能力
+      </div>
+    </section>
+
+    <div style="height:14px"></div>
+
+    <section class="tool-surface--light tool-surface" id="services">
+      <h2 id="aboutServicesTitle" style="margin:0 0 8px;">我可承接的项目</h2>
+      <p id="aboutServicesHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(写清楚交付物与边界：报表自动化/流程自动化/数据处理脚本等)</p>
+      <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; color:rgba(17,24,39,.70); line-height:1.8;">
+        <strong>交付示例：</strong><br/>
+        - Excel/VBA：模板 + 一键按钮 + 使用说明 + 可交接代码<br/>
+        - Power Automate：流程图 + 权限与连接器配置 + 维护说明<br/>
+        - Python：脚本/包 + 配置文件 + 运行方式 + 日志/异常处理
+      </div>
+    </section>
+
+    <div style="height:14px"></div>
+
+    <section class="tool-surface--light tool-surface" id="contact">
+      <h2 id="aboutContactTitle" style="margin:0 0 8px;">联系我</h2>
+      <p id="aboutContactHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(写邮箱/微信/可用时间/合作方式)</p>
+      <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; color:rgba(17,24,39,.70); line-height:1.8;">
+        Email：your@email.com<br/>
+        WeChat：your_wechat<br/>
+        Availability：evenings / weekends / project-based
+      </div>
+    </section>
+  </main>
+
+  <!-- Author modal (reuse) -->
+  <div id="authorModal" class="modal" aria-hidden="true">
+    <div id="authorModalContent" class="modal__content" role="dialog" aria-modal="true" aria-labelledby="authorTitle">
+      <div class="modal__head">
+        <h3 id="authorTitle">关于作者</h3>
+        <button id="authorClose" class="modal__close" aria-label="Close">✕</button>
+      </div>
+      <p id="authorText" class="modal__body">嗨，这里是 Ryan。</p>
+      <div class="modal__actions">
+        <a class="btn btn--yellow" href="index.html#contact">Contact</a>
+        <a class="btn btn--ghost" href="index.html#tools">Tools</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

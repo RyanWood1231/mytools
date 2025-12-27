@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>订单追踪系统</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单跟踪面板</title>
+  <link rel="icon" href="Logo.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
   <style>
+
     :root {
       --bg-color: #0f1117;
       --text-color: #e3e3e3;
@@ -14,7 +16,7 @@
       --button-hover: #4ec4e0;
     }
 
-    body.light-mode {
+    body.light {
       --bg-color: #f2f2f2;
       --text-color: #1a1a1a;
       --card-bg: #ffffff;
@@ -104,50 +106,67 @@
       font-size: .85rem;
       opacity: .75;
     }
+  
   </style>
 </head>
-<body>
-  <header class="pagehead">
-    <div class="container pagehead__inner">
-      <a class="backlink" href="index_new.html">← 返回工具站</a>
-      <button class="btn" type="button" onclick="toggleTheme()">切换主题</button>
+<body class="tool-page">
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html" aria-label="Home">
+        <span class="brand__dot" aria-hidden="true"></span>
+        <span id="brandText">Ryan • Automation</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Primary">
+        <a id="navTools" href="index.html#tools">Tools</a>
+        <a id="navAbout" href="about.html">About</a>
+        <a id="navContact" href="index.html#contact">Contact</a>
+      </nav>
+
+      <div class="topbar__actions">
+        <button id="langToggleBtn" class="pill" type="button">English</button>
+        <button id="themeToggleBtn" class="pill" type="button">切换主题</button>
+        <button id="authorBtn" class="pill pill--solid" type="button">作者信息</button>
+      </div>
     </div>
   </header>
 
+  <main class="tool-shell">
+    <div class="tool-surface--light tool-surface">
+      
+<div class="top-bar">
+<button onclick="toggleTheme()" type="button">切换主题</button>
+</div>
 <h1>📦 订单追踪系统</h1>
-
-  <div class="tool-card">
-    <label for="dhl-input">DHL 运单号：</label>
-    <input type="text" id="dhl-input" placeholder="请输入 DHL 单号" autocomplete="off">
-    <button class="track-btn" type="button" onclick="track('DHL')">查询</button>
-    <div class="hint small">支持回车直接查询</div>
-  </div>
-
-  <div class="tool-card">
-    <label for="tnt-input">TNT 运单号：</label>
-    <input type="text" id="tnt-input" placeholder="请输入 TNT 单号" autocomplete="off">
-    <button class="track-btn" type="button" onclick="track('TNT')">查询</button>
-    <div class="hint small">支持回车直接查询</div>
-  </div>
-
-  <div class="tool-card">
-    <label for="db-input">DB 运单号：</label>
-    <input type="text" id="db-input" placeholder="请输入 DB 单号" autocomplete="off">
-    <button class="track-btn" type="button" onclick="track('DB')">查询</button>
-    <div class="hint small">支持回车直接查询</div>
-  </div>
-
-  <script>
+<div class="tool-card">
+<label for="dhl-input">DHL 运单号：</label>
+<input autocomplete="off" id="dhl-input" placeholder="请输入 DHL 单号" type="text"/>
+<button class="track-btn" onclick="track('DHL')" type="button">查询</button>
+<div class="hint small">支持回车直接查询</div>
+</div>
+<div class="tool-card">
+<label for="tnt-input">TNT 运单号：</label>
+<input autocomplete="off" id="tnt-input" placeholder="请输入 TNT 单号" type="text"/>
+<button class="track-btn" onclick="track('TNT')" type="button">查询</button>
+<div class="hint small">支持回车直接查询</div>
+</div>
+<div class="tool-card">
+<label for="db-input">DB 运单号：</label>
+<input autocomplete="off" id="db-input" placeholder="请输入 DB 单号" type="text"/>
+<button class="track-btn" onclick="track('DB')" type="button">查询</button>
+<div class="hint small">支持回车直接查询</div>
+</div>
+<script>
     function toggleTheme() {
-      document.body.classList.toggle('light-mode');
-      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+      document.body.classList.toggle('light');
+      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
     }
 
     // 初始化主题
     (function () {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
+        document.body.classList.add('light');
       }
     })();
 
@@ -203,5 +222,25 @@
     bindEnter('tnt-input', 'TNT');
     bindEnter('db-input', 'DB');
   </script>
+
+    </div>
+  </main>
+
+  <!-- Author modal -->
+  <div id="authorModal" class="modal" aria-hidden="true">
+    <div id="authorModalContent" class="modal__content" role="dialog" aria-modal="true" aria-labelledby="authorTitle">
+      <div class="modal__head">
+        <h3 id="authorTitle">关于作者</h3>
+        <button id="authorClose" class="modal__close" aria-label="Close">✕</button>
+      </div>
+      <p id="authorText" class="modal__body">嗨，这里是 Ryan。</p>
+      <div class="modal__actions">
+        <a class="btn btn--yellow" href="index.html#contact">Contact</a>
+        <a class="btn btn--ghost" href="index.html#tools">Tools</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>

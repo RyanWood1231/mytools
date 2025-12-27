@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>26度穿衣助手</title>
-<link rel="stylesheet" href="style.css" />
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartWear 26</title>
+  <link rel="icon" href="Logo.png" type="image/png" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
   @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
   body {
     margin: 0; padding: 0;
@@ -35,7 +37,7 @@
     border: none;
     outline: none;
     width: 200px;
-    background: #082026;
+    background: transparent;
     color: #00fff0;
     box-shadow: 0 0 5px #00fff0;
     transition: box-shadow 0.3s ease;
@@ -44,7 +46,7 @@
     box-shadow: 0 0 15px #00ffea;
   }
   button {
-    background: #00fff0;
+    background: transparent;
     border: none;
     border-radius: 5px;
     padding: 10px 18px;
@@ -55,7 +57,7 @@
     transition: background 0.3s ease;
   }
   button:hover {
-    background: #00cfcf;
+    background: transparent;
   }
   #result, #manualResult {
     max-width: 600px;
@@ -82,7 +84,7 @@
   }
   #log {
     max-width: 600px;
-    background: #112d33;
+    background: transparent;
     color: #00aa88;
     padding: 10px 20px;
     border-radius: 8px;
@@ -97,41 +99,55 @@
     border-bottom: 1px solid #00fff0;
     padding-bottom: 4px;
   }
-</style>
+
+  </style>
 </head>
-<body>
-<header class="pagehead">
-  <div class="container pagehead__inner">
-    <a class="backlink" href="index_new.html">← 返回工具站</a>
-    <span class="muted" style="font-weight:750;">SmartWear 26</span>
-  </div>
-</header>
+<body class="tool-page">
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html" aria-label="Home">
+        <span class="brand__dot" aria-hidden="true"></span>
+        <span id="brandText">Ryan • Automation</span>
+      </a>
 
-  <header>26度穿衣助手</header>
+      <nav class="navlinks" aria-label="Primary">
+        <a id="navTools" href="index.html#tools">Tools</a>
+        <a id="navAbout" href="about.html">About</a>
+        <a id="navContact" href="index.html#contact">Contact</a>
+      </nav>
 
-  <section>
-    <h3 class="section-title">城市天气查询</h3>
-    <form id="cityForm">
-      <input type="text" id="cityInput" placeholder="输入城市名称" required />
-      <button type="submit">查询天气</button>
-    </form>
-    <div id="result"></div>
-  </section>
+      <div class="topbar__actions">
+        <button id="langToggleBtn" class="pill" type="button">English</button>
+        <button id="themeToggleBtn" class="pill" type="button">切换主题</button>
+        <button id="authorBtn" class="pill pill--solid" type="button">作者信息</button>
+      </div>
+    </div>
+  </header>
 
-  <section>
-    <h3 class="section-title">手动输入气温</h3>
-    <form id="manualForm">
-      <input type="number" id="manualTemp" placeholder="输入气温 (℃)" required />
-      <button type="submit">获取穿衣推荐</button>
-    </form>
-    <div id="manualResult"></div>
-  </section>
-
-  <section>
-    <h3 class="section-title">调试日志</h3>
-    <div id="log">无日志信息</div>
-  </section>
-
+  <main class="tool-shell">
+    <div class="tool-surface--light tool-surface">
+      
+<header>26度穿衣助手</header>
+<section>
+<h3 class="section-title">城市天气查询</h3>
+<form id="cityForm">
+<input id="cityInput" placeholder="输入城市名称" required="" type="text"/>
+<button type="submit">查询天气</button>
+</form>
+<div id="result"></div>
+</section>
+<section>
+<h3 class="section-title">手动输入气温</h3>
+<form id="manualForm">
+<input id="manualTemp" placeholder="输入气温 (℃)" required="" type="number"/>
+<button type="submit">获取穿衣推荐</button>
+</form>
+<div id="manualResult"></div>
+</section>
+<section>
+<h3 class="section-title">调试日志</h3>
+<div id="log">无日志信息</div>
+</section>
 <script>
   const targetTemp = 26;
 
@@ -318,5 +334,25 @@
     renderManualResult(val);
   });
 </script>
+
+    </div>
+  </main>
+
+  <!-- Author modal -->
+  <div id="authorModal" class="modal" aria-hidden="true">
+    <div id="authorModalContent" class="modal__content" role="dialog" aria-modal="true" aria-labelledby="authorTitle">
+      <div class="modal__head">
+        <h3 id="authorTitle">关于作者</h3>
+        <button id="authorClose" class="modal__close" aria-label="Close">✕</button>
+      </div>
+      <p id="authorText" class="modal__body">嗨，这里是 Ryan。</p>
+      <div class="modal__actions">
+        <a class="btn btn--yellow" href="index.html#contact">Contact</a>
+        <a class="btn btn--ghost" href="index.html#tools">Tools</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
