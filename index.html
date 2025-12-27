@@ -10,81 +10,159 @@
 <body>
   <header class="topbar">
     <div class="container topbar__inner">
-      <a class="brand" href="index_new.html" aria-label="Home">
-        <span class="brand__dot" aria-hidden="true"></span>
-        <span id="brandText">Ryan • Automation</span>
+      <a class="brand" href="index_new2.html" aria-label="Home">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">Ryan Studio</span>
       </a>
 
       <nav class="navlinks" aria-label="Primary">
-        <a href="#tools">Tools</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+        <a href="#tools" class="navlink">Tools</a>
+        <a href="#services" class="navlink">Services</a>
+        <a href="#contact" class="navlink">Contact</a>
       </nav>
 
-      <div id="buttonContainer">
-        <button id="langToggleBtn" type="button">English</button>
-        <button id="themeToggleBtn" type="button">切换主题</button>
-        <button id="authorBtn" type="button">作者信息</button>
+      <div class="topbar__actions" id="buttonContainer">
+        <button id="langToggleBtn" class="pill" type="button">English</button>
+        <button id="themeToggleBtn" class="pill" type="button">切换主题</button>
+        <button id="authorBtn" class="pill pill--solid" type="button">作者信息</button>
       </div>
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero" id="top">
-      <div class="hero__grid">
-        <div class="hero__copy">
-          <h1 id="pageTitle">我的工具站</h1>
+  <!-- HERO (Yeti-like: full-bleed background + huge headline + CTA) -->
+  <section class="hero" id="top" aria-label="Hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="container hero__inner">
+      <div class="hero__left">
+        <div class="eyebrow" id="pageTitle">我的工具站</div>
 
-          <h1>把重复工作自动化，让流程更稳更快。</h1>
-          <p class="muted">
-            我在日常工作中用 <strong>VBA</strong> / <strong>Power Automate</strong> / <strong>Python</strong>
-            做自动化与数据处理，也会做一些轻量 Web 工具。这里是我的工具与作品集入口。
-          </p>
+        <h1 class="hero__headline">
+          把重复工作自动化<br/>
+          让流程更稳更快<span class="dot">。</span>
+        </h1>
 
-          <div class="kpis" aria-label="Highlights">
-            <div class="kpi"><strong>VBA / Excel</strong><span>报表、模板、按钮、一键化</span></div>
-            <div class="kpi"><strong>Power Automate</strong><span>审批流、提醒、M365 集成</span></div>
-            <div class="kpi"><strong>Python</strong><span>数据清洗、ETL、定时任务</span></div>
-          </div>
+        <p class="hero__sub">
+          我做 <strong>VBA / Power Automate / Python</strong> 自动化与数据处理，也做轻量 Web 工具。
+          这里是我的作品集与工具入口，可用于求职展示，也欢迎联系我承接小型项目。
+        </p>
 
-          <div class="searchbar" id="tools">
-            <input type="text" id="searchInput" placeholder="搜索工具..." />
-            <a class="btn btn--primary" href="#contact">Let’s connect</a>
-          </div>
+        <div class="hero__cta">
+          <a class="cta cta--primary" href="#tools">查看作品集</a>
+          <a class="cta cta--ghost" href="#contact">Let’s connect</a>
         </div>
 
-        <aside class="hero__aside" id="about">
-          <div class="stack">
-            <div>
-              <div style="font-weight:850; font-size:16px;">你可以在这里看到：</div>
-              <div class="muted" style="line-height:1.7; margin-top:6px;">
-                工具入口（在线/本地）、项目说明、以及我的编码学习与实践记录。
-              </div>
-            </div>
+        <div class="hero__badges" aria-label="Highlights">
+          <div class="badge">
+            <div class="badge__k">VBA / Excel</div>
+            <div class="badge__t">报表 · 模板 · 一键化</div>
+          </div>
+          <div class="badge">
+            <div class="badge__k">Power Automate</div>
+            <div class="badge__t">审批 · 提醒 · M365</div>
+          </div>
+          <div class="badge">
+            <div class="badge__k">Python</div>
+            <div class="badge__t">ETL · 清洗 · 定时任务</div>
+          </div>
+        </div>
+      </div>
 
-            <div style="border-top:1px solid var(--line); padding-top:12px;">
-              <div style="font-weight:850;">合作方式</div>
-              <div class="muted" style="line-height:1.7; margin-top:6px;">
-                可接：Excel/VBA 自动化、Power Automate 流程、Python 数据处理、小型网页工具。
-              </div>
-            </div>
+      <div class="hero__right" id="about">
+        <div class="awardPanel" aria-label="Proof">
+          <div class="awardPanel__title">What I deliver</div>
+          <ul class="awardPanel__list">
+            <li>✅ 可维护脚本 / 可交接文档</li>
+            <li>✅ 面向业务的“省时省错”结果</li>
+            <li>✅ 快速迭代，小步交付</li>
+          </ul>
 
-            <div id="contact" style="border-top:1px solid var(--line); padding-top:12px;">
-              <div style="font-weight:850;">联系我</div>
-              <div class="muted" style="line-height:1.7; margin-top:6px;">
-                点击右上角「作者信息」查看更多联系方式与介绍。
-              </div>
+          <div class="awardPanel__mini">
+            <div class="mini">
+              <div class="mini__k">常用</div>
+              <div class="mini__t">Excel · SharePoint · Teams</div>
+            </div>
+            <div class="mini">
+              <div class="mini__k">交付</div>
+              <div class="mini__t">模板 · 脚本 · 自动化流程</div>
             </div>
           </div>
-        </aside>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section aria-label="Tools">
-      <div id="toolsContainer"></div>
-    </section>
-  </main>
+  <!-- SERVICES (like Yeti "Services we provide") -->
+  <section class="services" id="services" aria-label="Services">
+    <div class="container">
+      <div class="sectionHead">
+        <h2>我能提供的服务</h2>
+        <a class="sectionLink" href="#contact">Read about what I do ↗</a>
+      </div>
 
+      <div class="serviceGrid">
+        <article class="serviceCard">
+          <div class="serviceArt" aria-hidden="true">📊</div>
+          <h3>VBA / Excel 自动化</h3>
+          <p>报表生成、数据整理、模板化导出、按钮化操作，让 Excel 真正“像软件”。</p>
+        </article>
+
+        <article class="serviceCard">
+          <div class="serviceArt" aria-hidden="true">⚡</div>
+          <h3>Power Automate 流程</h3>
+          <p>审批流、提醒通知、Teams/SharePoint 集成，把人肉流程变成可追踪的自动化。</p>
+        </article>
+
+        <article class="serviceCard">
+          <div class="serviceArt" aria-hidden="true">🐍</div>
+          <h3>Python 数据处理</h3>
+          <p>ETL、清洗合并、定时报表、接口抓取，把一次性需求变成可复用工具。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS / PORTFOLIO CARDS -->
+  <section class="portfolio" id="tools" aria-label="Tools & Projects">
+    <div class="container">
+      <div class="sectionHead sectionHead--tight">
+        <h2>作品集 / 工具入口</h2>
+        <div class="searchWrap">
+          <input type="text" id="searchInput" class="search" placeholder="搜索工具..." />
+        </div>
+      </div>
+
+      <div id="toolsContainer" class="toolsGrid"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact" aria-label="Contact">
+    <div class="container contact__inner">
+      <div class="contact__copy">
+        <h2>Let’s connect</h2>
+        <p class="muted">
+          如果你想把重复工作自动化、搭建报表流程、做一个小型数据处理/网页工具，欢迎联系我。
+          我通常在 24–48 小时内回复。
+        </p>
+        <div class="contact__chips">
+          <span class="chip">Excel/VBA</span>
+          <span class="chip">Power Automate</span>
+          <span class="chip">Python</span>
+          <span class="chip">Web Tools</span>
+        </div>
+        <p class="muted">更多联系方式：点击右上角「作者信息」。</p>
+      </div>
+
+      <div class="contact__card">
+        <div class="contact__label">快速说明需求</div>
+        <textarea class="contact__textarea" placeholder="一句话描述你想自动化的流程 / 数据来源 / 期望交付物"></textarea>
+        <button class="cta cta--primary" type="button">Send (demo)</button>
+        <div class="muted small">（你若有表单/后端，我可以帮你接上。）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUTHOR MODAL (kept for app.js) -->
   <div id="authorModal" role="dialog" aria-modal="true" aria-labelledby="authorTitle">
     <div id="authorModalContent">
       <span id="authorClose" title="关闭" aria-label="Close">&times;</span>
@@ -93,6 +171,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app_new2.js"></script>
 </body>
 </html>

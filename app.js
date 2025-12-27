@@ -126,18 +126,40 @@ function renderTools() {
     pDesc.textContent = text.desc;
 
     const pLink = document.createElement("p");
+    pLink.className = "tool-link";
     const a = document.createElement("a");
     a.className = "tool-link";
     a.textContent = text.linkText;
 
     if (base.enabled) {
       a.href = base.href;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
+
+      // External links open in a new tab; internal tools open in the same tab
+      const isExternal = /^https?:\/\//i.test(base.href);
+      if (isExternal) {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
+
+      // Make the whole card clickable (Yeti-like cards)
+      card.classList.add("is-clickable");
+      card.tabIndex = 0;
+      const go = () => {
+        if (isExternal) window.open(base.href, "_blank", "noopener,noreferrer");
+        else window.location.href = base.href;
+      };
+      card.addEventListener("click", go);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          go();
+        }
+      });
     } else {
       a.href = "javascript:void(0)";
       a.classList.add("disabled");
       a.setAttribute("aria-disabled", "true");
+      card.classList.add("is-disabled");
     }
 
     pLink.appendChild(a);
