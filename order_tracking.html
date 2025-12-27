@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>订单追踪系统</title>
+  <link rel="stylesheet" href="style_new.css" />
   <style>
     :root {
       --bg-color: #0f1117;
@@ -13,7 +14,7 @@
       --button-hover: #4ec4e0;
     }
 
-    body.light {
+    body.light-mode {
       --bg-color: #f2f2f2;
       --text-color: #1a1a1a;
       --card-bg: #ffffff;
@@ -106,12 +107,14 @@
   </style>
 </head>
 <body>
+  <header class="pagehead">
+    <div class="container pagehead__inner">
+      <a class="backlink" href="index_new.html">← 返回工具站</a>
+      <button class="btn" type="button" onclick="toggleTheme()">切换主题</button>
+    </div>
+  </header>
 
-  <div class="top-bar">
-    <button type="button" onclick="toggleTheme()">切换主题</button>
-  </div>
-
-  <h1>📦 订单追踪系统</h1>
+<h1>📦 订单追踪系统</h1>
 
   <div class="tool-card">
     <label for="dhl-input">DHL 运单号：</label>
@@ -136,15 +139,15 @@
 
   <script>
     function toggleTheme() {
-      document.body.classList.toggle('light');
-      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+      document.body.classList.toggle('light-mode');
+      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
     }
 
     // 初始化主题
     (function () {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'light') {
-        document.body.classList.add('light');
+        document.body.classList.add('light-mode');
       }
     })();
 

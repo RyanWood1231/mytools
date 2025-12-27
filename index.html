@@ -5,34 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>我的工具站</title>
   <link rel="icon" href="Logo.png" type="image/png" />
-
-  <!-- 关联外部 CSS -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style_new.css" />
 </head>
-
 <body>
-  <div id="buttonContainer">
-    <button id="langToggleBtn" type="button">English</button>
-    <button id="themeToggleBtn" type="button">切换主题</button>
-    <button id="authorBtn" type="button">作者信息</button>
-  </div>
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index_new.html" aria-label="Home">
+        <span class="brand__dot" aria-hidden="true"></span>
+        <span id="brandText">Ryan • Automation</span>
+      </a>
 
-  <h1 id="pageTitle">我的工具站</h1>
-  <input type="text" id="searchInput" placeholder="搜索工具..." />
+      <nav class="navlinks" aria-label="Primary">
+        <a href="#tools">Tools</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
 
-  <!-- 工具列表：由 JS 渲染 -->
-  <div id="toolsContainer"></div>
+      <div id="buttonContainer">
+        <button id="langToggleBtn" type="button">English</button>
+        <button id="themeToggleBtn" type="button">切换主题</button>
+        <button id="authorBtn" type="button">作者信息</button>
+      </div>
+    </div>
+  </header>
 
-  <!-- 作者信息模态框 -->
-  <div id="authorModal">
+  <main class="container">
+    <section class="hero" id="top">
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <h1 id="pageTitle">我的工具站</h1>
+
+          <h1>把重复工作自动化，让流程更稳更快。</h1>
+          <p class="muted">
+            我在日常工作中用 <strong>VBA</strong> / <strong>Power Automate</strong> / <strong>Python</strong>
+            做自动化与数据处理，也会做一些轻量 Web 工具。这里是我的工具与作品集入口。
+          </p>
+
+          <div class="kpis" aria-label="Highlights">
+            <div class="kpi"><strong>VBA / Excel</strong><span>报表、模板、按钮、一键化</span></div>
+            <div class="kpi"><strong>Power Automate</strong><span>审批流、提醒、M365 集成</span></div>
+            <div class="kpi"><strong>Python</strong><span>数据清洗、ETL、定时任务</span></div>
+          </div>
+
+          <div class="searchbar" id="tools">
+            <input type="text" id="searchInput" placeholder="搜索工具..." />
+            <a class="btn btn--primary" href="#contact">Let’s connect</a>
+          </div>
+        </div>
+
+        <aside class="hero__aside" id="about">
+          <div class="stack">
+            <div>
+              <div style="font-weight:850; font-size:16px;">你可以在这里看到：</div>
+              <div class="muted" style="line-height:1.7; margin-top:6px;">
+                工具入口（在线/本地）、项目说明、以及我的编码学习与实践记录。
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--line); padding-top:12px;">
+              <div style="font-weight:850;">合作方式</div>
+              <div class="muted" style="line-height:1.7; margin-top:6px;">
+                可接：Excel/VBA 自动化、Power Automate 流程、Python 数据处理、小型网页工具。
+              </div>
+            </div>
+
+            <div id="contact" style="border-top:1px solid var(--line); padding-top:12px;">
+              <div style="font-weight:850;">联系我</div>
+              <div class="muted" style="line-height:1.7; margin-top:6px;">
+                点击右上角「作者信息」查看更多联系方式与介绍。
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section aria-label="Tools">
+      <div id="toolsContainer"></div>
+    </section>
+  </main>
+
+  <div id="authorModal" role="dialog" aria-modal="true" aria-labelledby="authorTitle">
     <div id="authorModalContent">
-      <span id="authorClose" title="关闭">&times;</span>
+      <span id="authorClose" title="关闭" aria-label="Close">&times;</span>
       <h2 id="authorTitle">关于作者</h2>
       <p id="authorText">嗨，这里是Ryan。</p>
     </div>
   </div>
 
-  <!-- 关联外部 JS -->
   <script src="app.js"></script>
 </body>
 </html>
