@@ -3,127 +3,513 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>关于我</title>
+  <title>关于我 | Ryan Studio</title>
   <link rel="icon" href="Logo.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Ensure default theme is LIGHT when there is no preference stored yet -->
+  <script>
+    (function () {
+      try {
+        var key = "theme";
+        var saved = localStorage.getItem(key);
+        if (!saved) localStorage.setItem(key, "light");
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- About page readability guarantees (no need to modify style.css) -->
+  <style>
+    /* Use existing site structure, but guarantee dark-mode readability */
+    body:not(.light-mode) .tool-surface,
+    body:not(.light-mode) .tool-surface--light {
+      color: rgba(255,255,255,.92);
+    }
+    body:not(.light-mode) .tool-surface p,
+    body:not(.light-mode) .tool-surface li,
+    body:not(.light-mode) .tool-surface span,
+    body:not(.light-mode) .tool-surface a,
+    body:not(.light-mode) .tool-surface--light p,
+    body:not(.light-mode) .tool-surface--light li,
+    body:not(.light-mode) .tool-surface--light span,
+    body:not(.light-mode) .tool-surface--light a {
+      color: rgba(255,255,255,.82);
+    }
+    body:not(.light-mode) .muted { color: rgba(255,255,255,.70) !important; }
+
+    /* Make dashed boxes visible on dark */
+    body:not(.light-mode) .dashbox {
+      border-color: rgba(255,255,255,.22) !important;
+      background: rgba(255,255,255,.04);
+    }
+
+    /* Responsive grids */
+    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    @media (max-width: 980px){ .grid-3 { grid-template-columns:1fr; } }
+
+    .section-title { margin:0 0 8px; }
+    .section-gap { height:14px; }
+
+    .tagrow { display:flex; flex-wrap:wrap; gap:8px; }
+    .tag {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(17,24,39,.12);
+      background: rgba(255,255,255,.55);
+      font-size: 13px;
+    }
+    body:not(.light-mode) .tag{
+      border-color: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.86);
+    }
+
+    .timeline { display:grid; gap:10px; }
+    .titem { border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; }
+    body:not(.light-mode) .titem { border-color: rgba(255,255,255,.22); }
+    .titem h3 { margin:0 0 6px; font-size:16px; }
+    .titem .meta { font-size:13px; }
+    .titem ul { margin:10px 0 0; padding-left:18px; line-height:1.85; }
+
+    .hero-title { margin:0 0 10px; font-size:42px; letter-spacing:-.6px; }
+    .hero-sub { margin:0; line-height:1.7; max-width: 76ch; }
+
+    /* Contact placeholder block */
+    .contact-box { line-height:1.9; }
+    .contact-box code { padding: 2px 6px; border-radius: 8px; background: rgba(17,24,39,.06); }
+    body:not(.light-mode) .contact-box code { background: rgba(255,255,255,.10); color: rgba(255,255,255,.92); }
+
+    /* Keep topbar buttons consistent */
+    .topbar__actions a.pill { text-decoration:none; }
+  </style>
 </head>
+
 <body class="tool-page">
   <header class="topbar">
     <div class="container topbar__inner">
       <a class="brand" href="index.html" aria-label="Home">
         <span class="brand__dot" aria-hidden="true"></span>
-        <span id="brandText">Ryan • Automation</span>
+        <span id="brandText">Ryan Studio</span>
       </a>
 
       <nav class="navlinks" aria-label="Primary">
-        <a id="navTools" href="index.html#tools">Tools</a>
-        <a id="navAbout" href="about.html">About</a>
-        <a id="navContact" href="index.html#contact">Contact</a>
+        <a data-i18n="nav.tools" href="index.html#tools">Tools</a>
+        <a data-i18n="nav.services" href="index.html#services">Services</a>
+        <a data-i18n="nav.contact" href="index.html#contact">Contact</a>
       </nav>
 
       <div class="topbar__actions">
         <button id="langToggleBtn" class="pill" type="button">English</button>
         <button id="themeToggleBtn" class="pill" type="button">切换主题</button>
-        <button id="authorBtn" class="pill pill--solid" type="button">作者信息</button>
+        <!-- Author button goes to about.html (no modal) -->
+        <a id="authorBtn" class="pill pill--solid" href="about.html" data-i18n="nav.about_btn">作者信息</a>
       </div>
     </div>
   </header>
 
   <main class="tool-shell">
-    <div class="tool-surface--light tool-surface">
-      <h1 id="aboutPageTitle" style="margin:0 0 10px; font-size:42px; letter-spacing:-.6px;">关于我</h1>
-      <p style="margin:0; color:rgba(17,24,39,.70); line-height:1.7; max-width:72ch;">
-        这个页面是给你“填内容”的结构模板：每个区块都留了提示，你可以逐步补充。中文/英文切换时，标题与提示会自动切换；正文你可以写双语或只写一种。
+    <section class="tool-surface--light tool-surface">
+      <h1 class="hero-title" data-i18n="hero.title">关于我</h1>
+      <p class="hero-sub muted" data-i18n="hero.subtitle">
+        我专注于用 VBA / Power Automate / Python / SQL 把重复工作自动化，让流程更稳、更快、更可交接。
       </p>
-    </div>
-
-    <div style="height:14px"></div>
-
-    <section class="tool-surface--light tool-surface" id="intro">
-      <h2 id="aboutIntroTitle" style="margin:0 0 8px;">一句话介绍</h2>
-      <p id="aboutIntroHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(你可以在这里写：我是谁 + 我擅长什么 + 我能带来什么结果)</p>
-      <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; color:rgba(17,24,39,.60);">
-        在这里写正文：例如你的岗位/行业背景、专注方向、你做自动化的理念与价值。
+      <div class="section-gap"></div>
+      <div class="tagrow" aria-label="Key tags">
+        <span class="tag">Excel (VBA)</span>
+        <span class="tag">SQL</span>
+        <span class="tag">Python</span>
+        <span class="tag">Power BI</span>
+        <span class="tag">Power Automate</span>
+        <span class="tag">WMS / TMS</span>
       </div>
     </section>
 
-    <div style="height:14px"></div>
+    <div class="section-gap"></div>
+
+    <section class="tool-surface--light tool-surface" id="summary">
+      <h2 class="section-title" data-i18n="summary.title">概览</h2>
+      <div class="dashbox" style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">
+        <p class="muted" style="margin:0; line-height:1.9;" data-i18n="summary.p1">
+          目前在荷兰从事物流数据与系统相关工作：用自动化工具减少人工录入与错误，用 SQL/BI 报表提升仓库可视化，并参与 WMS 实施与系统集成项目，推动跨部门按期交付。
+        </p>
+        <p class="muted" style="margin:10px 0 0; line-height:1.9;" data-i18n="summary.p2">
+          我偏好的交付方式是：把需求拆成可验证的小模块，先交付可用版本，再迭代完善，最后提供可交接的脚本/文档/使用说明。
+        </p>
+      </div>
+    </section>
+
+    <div class="section-gap"></div>
 
     <section class="tool-surface--light tool-surface" id="skills">
-      <h2 id="aboutSkillsTitle" style="margin:0 0 8px;">技能与工具栈</h2>
-      <p id="aboutSkillsHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(示例：VBA/Excel、Power Automate、Python、HTML/CSS、Power BI 等)</p>
-      <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px;">
-        <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">Category 1<br/><span style="color:rgba(17,24,39,.60); font-size:13px;">列出技能点</span></div>
-        <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">Category 2<br/><span style="color:rgba(17,24,39,.60); font-size:13px;">列出技能点</span></div>
-        <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">Category 3<br/><span style="color:rgba(17,24,39,.60); font-size:13px;">列出技能点</span></div>
+      <h2 class="section-title" data-i18n="skills.title">技能与工具栈</h2>
+      <div class="grid-3">
+        <div class="dashbox" style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">
+          <strong data-i18n="skills.software">Software</strong>
+          <p class="muted" style="margin:8px 0 0; line-height:1.9;">
+            Microsoft Excel (VBA) · SQL · Python · Power BI · HTML
+          </p>
+        </div>
+        <div class="dashbox" style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">
+          <strong data-i18n="skills.domain">Domain</strong>
+          <p class="muted" style="margin:8px 0 0; line-height:1.9;">
+            WMS / TMS configuration · Warehouse operations · System integration support
+          </p>
+        </div>
+        <div class="dashbox" style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">
+          <strong data-i18n="skills.methods">Methods</strong>
+          <p class="muted" style="margin:8px 0 0; line-height:1.9;">
+            KPI dashboarding · Predictive analytics · Cross‑functional project coordination
+          </p>
+        </div>
       </div>
     </section>
 
-    <div style="height:14px"></div>
+    <div class="section-gap"></div>
 
-    <section class="tool-surface--light tool-surface" id="highlights">
-      <h2 id="aboutHighlightsTitle" style="margin:0 0 8px;">代表性成果</h2>
-      <p id="aboutHighlightsHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(示例：节省工时、减少错误、自动化覆盖范围等)</p>
-      <ul style="margin:0; padding-left:18px; line-height:1.9; color:rgba(17,24,39,.70);">
-        <li>成果 1（量化结果更好：节省 X 小时/周，减少 X% 错误）</li>
-        <li>成果 2</li>
-        <li>成果 3</li>
-      </ul>
-    </section>
+    <section class="tool-surface--light tool-surface" id="experience">
+      <h2 class="section-title" data-i18n="exp.title">工作与实习经历</h2>
 
-    <div style="height:14px"></div>
+      <div class="timeline">
+        <div class="titem">
+          <h3 data-i18n="exp.cts.title">Logistic Data Specialist · CTS (Netherlands)</h3>
+          <div class="meta muted" data-i18n="exp.cts.meta">Apr 2024 – Present</div>
+          <ul>
+            <li data-i18n="exp.cts.b1">使用 Python/VBA 构建自动化工具，将人工录入减少约 50%，错误率下降约 98%。</li>
+            <li data-i18n="exp.cts.b2">在 WMS 中开发定制 SQL 报表（入库/出库看板、实时效率 KPI），提升仓库可视化与运营决策。</li>
+            <li data-i18n="exp.cts.b3">推动 2 个全生命周期 WMS 实施：负责范围定义、SOP 设计、IT 集成对接，把业务需求转成技术规格，并协调跨部门按期交付。</li>
+            <li data-i18n="exp.cts.b4">协助 4 个系统集成项目管理：参与需求梳理、时间线控制与干系人协同，确保实施对齐业务目标。</li>
+            <li data-i18n="exp.cts.b5">端到端支持仓储运营（入库预测、出库运输订单、实时库存控制），并计算月度/年度 KPI 驱动绩效改进。</li>
+          </ul>
+        </div>
 
-    <section class="tool-surface--light tool-surface" id="journey">
-      <h2 id="aboutJourneyTitle" style="margin:0 0 8px;">学习与经历</h2>
-      <p id="aboutJourneyHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(用时间线写：开始 → 项目 → 成长)</p>
-      <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; color:rgba(17,24,39,.70); line-height:1.8;">
-        <strong>202X</strong>：开始接触 VBA / 自动化<br/>
-        <strong>202X</strong>：落地某个自动化项目（写结果）<br/>
-        <strong>202X</strong>：开始用 Power Automate / Python 扩展能力
+        <div class="titem">
+          <h3 data-i18n="exp.momentum.title">Data Science Research Intern (House Price Prediction) · Momentum Technologies BV (Netherlands)</h3>
+          <div class="meta muted" data-i18n="exp.momentum.meta">Jun 2023 – Nov 2023</div>
+          <ul>
+            <li data-i18n="exp.momentum.b1">清洗与处理 18,000+ 条 Utrecht 房源数据（2018–2022，来源 funda.nl）：缺失值处理、特征编码、异常值过滤。</li>
+            <li data-i18n="exp.momentum.b2">阅读 80+ 篇相关论文，对传统方法与机器学习模型进行方案设计与对比。</li>
+            <li data-i18n="exp.momentum.b3">构建并对比 4 个模型（XGBoost、Random Forest、ANN、Linear Regression），调参并用 MAE/RMSE 评估。</li>
+            <li data-i18n="exp.momentum.b4">做变量选择与对比分析，在优化成本的同时将模型准确性提升约 5%。</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <div style="height:14px"></div>
+    <div class="section-gap"></div>
 
-    <section class="tool-surface--light tool-surface" id="services">
-      <h2 id="aboutServicesTitle" style="margin:0 0 8px;">我可承接的项目</h2>
-      <p id="aboutServicesHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(写清楚交付物与边界：报表自动化/流程自动化/数据处理脚本等)</p>
-      <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; color:rgba(17,24,39,.70); line-height:1.8;">
-        <strong>交付示例：</strong><br/>
-        - Excel/VBA：模板 + 一键按钮 + 使用说明 + 可交接代码<br/>
-        - Power Automate：流程图 + 权限与连接器配置 + 维护说明<br/>
-        - Python：脚本/包 + 配置文件 + 运行方式 + 日志/异常处理
+    <section class="tool-surface--light tool-surface" id="education">
+      <h2 class="section-title" data-i18n="edu.title">教育背景</h2>
+
+      <div class="timeline">
+        <div class="titem">
+          <h3 data-i18n="edu.eur.title">Erasmus University Rotterdam · MSc in Economics and Business</h3>
+          <div class="meta muted" data-i18n="edu.eur.meta">Data Science and Marketing Analytics · Sep 2022 – Nov 2023 · Rotterdam, NL</div>
+          <ul>
+            <li data-i18n="edu.eur.b1">课程与训练：R 数据分析、机器学习建模、深度学习训练。</li>
+            <li data-i18n="edu.eur.b2">论文题目：Investigating the variable importance for house price prediction in Utrecht, Netherlands.</li>
+          </ul>
+        </div>
+
+        <div class="titem">
+          <h3 data-i18n="edu.sufe.title">Shanghai University of Finance and Economics · BSc in Economics (Finance)</h3>
+          <div class="meta muted" data-i18n="edu.sufe.meta">Shanghai, China</div>
+          <ul>
+            <li data-i18n="edu.sufe.b1">主修课程：Mathematical Analysis、Excel in Economic Management 等。</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <div style="height:14px"></div>
+    <div class="section-gap"></div>
+
+    <section class="tool-surface--light tool-surface" id="projects">
+      <h2 class="section-title" data-i18n="proj.title">项目精选</h2>
+
+      <div class="timeline">
+        <div class="titem">
+          <h3 data-i18n="proj.web.title">Personal Web App Projects – xtoolshub.com</h3>
+          <div class="meta muted" data-i18n="proj.web.meta">Deployed at xtoolshub.com · Jun 2024</div>
+          <ul>
+            <li data-i18n="proj.web.b1">使用 Streamlit 与 HTML/JavaScript 开发并部署交互式 Web 工具，托管于 Cloudflare Pages 与 Streamlit Cloud。</li>
+            <li data-i18n="proj.web.b2">实现基于天气 API 的穿搭推荐工具：获取实时天气→分析温度→给出当日穿搭建议。</li>
+            <li data-i18n="proj.web.b3">实现浏览器内实时数据处理工具：通过 UI 让用户直接使用我的 Python 脚本。</li>
+            <li data-i18n="proj.web.b4">实现中英文双语与 light/dark 主题切换，提高可用性与可访问性。</li>
+          </ul>
+        </div>
+
+        <div class="titem">
+          <h3 data-i18n="proj.dhl.title">Python Integration with DHL Shipment – ETA & ATA Tracker</h3>
+          <div class="meta muted" data-i18n="proj.dhl.meta">Jun 2024</div>
+          <ul>
+            <li data-i18n="proj.dhl.b1">用 Python 调用 DHL 公共 API 自动拉取订单 ETA/ATA，解析 JSON 并加载到数据框中分析。</li>
+            <li data-i18n="proj.dhl.b2">开发 VBA 宏计算配送 KPI（准时率、平均延迟等），并生成监控报表追踪实时派送表现。</li>
+          </ul>
+        </div>
+
+        <div class="titem">
+          <h3 data-i18n="proj.vba.title">VBA Automated Financial Reconciliation & Billing – Cost Matching and Invoicing</h3>
+          <div class="meta muted" data-i18n="proj.vba.meta">Feb 2025</div>
+          <ul>
+            <li data-i18n="proj.vba.b1">开发 VBA 工具自动导入并匹配运单数据与费率表，计算每票准确成本。</li>
+            <li data-i18n="proj.vba.b2">自动生成发票：读取客户定价、填充明细行、汇总财务报表。</li>
+            <li data-i18n="proj.vba.b3">将人工开票时间减少 70%+，并通过自动匹配提升准确性、降低人为错误。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-gap"></div>
 
     <section class="tool-surface--light tool-surface" id="contact">
-      <h2 id="aboutContactTitle" style="margin:0 0 8px;">联系我</h2>
-      <p id="aboutContactHint" style="margin:0 0 12px; color:rgba(17,24,39,.70);">(写邮箱/微信/可用时间/合作方式)</p>
-      <div style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; color:rgba(17,24,39,.70); line-height:1.8;">
-        Email：your@email.com<br/>
-        WeChat：your_wechat<br/>
-        Availability：evenings / weekends / project-based
+      <h2 class="section-title" data-i18n="contact.title">联系我</h2>
+      <p class="muted" style="margin:0 0 12px; line-height:1.8;" data-i18n="contact.subtitle">
+        请在下面找到我的邮箱，我会在 24-48 小时内回复。
+      </p>
+      <div class="dashbox contact-box" style="border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px;">
+        <div><strong>Email</strong>：<code>RyanAutomate@outlook.com</code></div>
+        <div class="muted" style="margin-top:8px;" data-i18n="contact.note">
+          请在邮件中附带你的详细需求，或你的联系方式，方便我们后续沟通。
+        </div>
+      </div>
+    </section>
+
+    <div class="section-gap"></div>
+
+    <section class="tool-surface--light tool-surface">
+      <div class="muted" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <span data-i18n="footer.left">© Ryan Studio</span>
+        <span data-i18n="footer.right">Automation • Data • Delivery</span>
       </div>
     </section>
   </main>
 
-  <!-- Author modal (reuse) -->
-  <div id="authorModal" class="modal" aria-hidden="true">
-    <div id="authorModalContent" class="modal__content" role="dialog" aria-modal="true" aria-labelledby="authorTitle">
-      <div class="modal__head">
-        <h3 id="authorTitle">关于作者</h3>
-        <button id="authorClose" class="modal__close" aria-label="Close">✕</button>
-      </div>
-      <p id="authorText" class="modal__body">嗨，这里是 Ryan。</p>
-      <div class="modal__actions">
-        <a class="btn btn--yellow" href="index.html#contact">Contact</a>
-        <a class="btn btn--ghost" href="index.html#tools">Tools</a>
-      </div>
-    </div>
-  </div>
+  <!-- About page local scripts: theme + language (no dependency on app.js) -->
+  <script>
+    (function () {
+      const LS = { theme: "theme", lang: "lang" };
 
-  <script src="app.js"></script>
+      const I18N = {
+        cn: {
+          htmlLang: "zh-CN",
+          title: "关于我 | Ryan Studio",
+          buttons: { langTo: "English", theme: "切换主题" },
+          nav: { tools: "Tools", services: "Services", contact: "Contact", about_btn: "作者信息" },
+          hero: {
+            title: "关于我",
+            subtitle: "我专注于用 VBA / Power Automate / Python / SQL 把重复工作自动化，让流程更稳、更快、更可交接。"
+          },
+          summary: {
+            title: "概览",
+            p1: "目前在荷兰从事物流数据与系统相关工作：用自动化工具减少人工录入与错误，用 SQL/BI 报表提升仓库可视化，并参与 WMS 实施与系统集成项目，推动跨部门按期交付。",
+            p2: "我偏好的交付方式是：把需求拆成可验证的小模块，先交付可用版本，再迭代完善，最后提供可交接的脚本/文档/使用说明。"
+          },
+          skills: { title: "技能与工具栈", software: "软件", domain: "领域", methods: "方法" },
+          exp: {
+            title: "工作与实习经历",
+            cts: {
+              title: "Logistic Data Specialist · CTS (Netherlands)",
+              meta: "Apr 2024 – Present",
+              b1: "使用 Python/VBA 构建自动化工具，将人工录入减少约 50%，错误率下降约 98%。",
+              b2: "在 WMS 中开发定制 SQL 报表（入库/出库看板、实时效率 KPI），提升仓库可视化与运营决策。",
+              b3: "推动 2 个全生命周期 WMS 实施：负责范围定义、SOP 设计、IT 集成对接，把业务需求转成技术规格，并协调跨部门按期交付。",
+              b4: "协助 4 个系统集成项目管理：参与需求梳理、时间线控制与干系人协同，确保实施对齐业务目标。",
+              b5: "端到端支持仓储运营（入库预测、出库运输订单、实时库存控制），并计算月度/年度 KPI 驱动绩效改进。"
+            },
+            momentum: {
+              title: "Data Science Research Intern (House Price Prediction) · Momentum Technologies BV (Netherlands)",
+              meta: "Jun 2023 – Nov 2023",
+              b1: "清洗与处理 18,000+ 条 Utrecht 房源数据（2018–2022，来源 funda.nl）：缺失值处理、特征编码、异常值过滤。",
+              b2: "阅读 80+ 篇相关论文，对传统方法与机器学习模型进行方案设计与对比。",
+              b3: "构建并对比 4 个模型（XGBoost、Random Forest、ANN、Linear Regression），调参并用 MAE/RMSE 评估。",
+              b4: "做变量选择与对比分析，在优化成本的同时将模型准确性提升约 5%。"
+            }
+          },
+          edu: {
+            title: "教育背景",
+            eur: {
+              title: "Erasmus University Rotterdam · MSc in Economics and Business",
+              meta: "Data Science and Marketing Analytics · Sep 2022 – Nov 2023 · Rotterdam, NL",
+              b1: "课程与训练：R 数据分析、机器学习建模、深度学习训练。",
+              b2: "论文题目：Investigating the variable importance for house price prediction in Utrecht, Netherlands."
+            },
+            sufe: {
+              title: "Shanghai University of Finance and Economics · BSc in Economics (Finance)",
+              meta: "Shanghai, China",
+              b1: "主修课程：Mathematical Analysis、Excel in Economic Management 等。"
+            }
+          },
+          proj: {
+            title: "项目精选",
+            web: {
+              title: "Personal Web App Projects – xtoolshub.com",
+              meta: "Deployed at xtoolshub.com · Jun 2024",
+              b1: "使用 Streamlit 与 HTML/JavaScript 开发并部署交互式 Web 工具，托管于 Cloudflare Pages 与 Streamlit Cloud。",
+              b2: "实现基于天气 API 的穿搭推荐工具：获取实时天气→分析温度→给出当日穿搭建议。",
+              b3: "实现浏览器内实时数据处理工具：通过 UI 让用户直接使用我的 Python 脚本。",
+              b4: "实现中英文双语与 light/dark 主题切换，提高可用性与可访问性。"
+            },
+            dhl: {
+              title: "Python Integration with DHL Shipment – ETA & ATA Tracker",
+              meta: "Jun 2024",
+              b1: "用 Python 调用 DHL 公共 API 自动拉取订单 ETA/ATA，解析 JSON 并加载到数据框中分析。",
+              b2: "开发 VBA 宏计算配送 KPI（准时率、平均延迟等），并生成监控报表追踪实时派送表现。"
+            },
+            vba: {
+              title: "VBA Automated Financial Reconciliation & Billing – Cost Matching and Invoicing",
+              meta: "Feb 2025",
+              b1: "开发 VBA 工具自动导入并匹配运单数据与费率表，计算每票准确成本。",
+              b2: "自动生成发票：读取客户定价、填充明细行、汇总财务报表。",
+              b3: "将人工开票时间减少 70%+，并通过自动匹配提升准确性、降低人为错误。"
+            }
+          },
+          contact: {
+            title: "联系我",
+            subtitle: "请在下面找到我的邮箱，我会在 24-48 小时内回复。",
+            note: "请在邮件中附带你的详细需求，或你的联系方式，方便我们后续沟通。"
+          },
+          footer: { left: "© Ryan Studio", right: "Automation • Data • Delivery" }
+        },
+
+        en: {
+          htmlLang: "en",
+          title: "About | Ryan Studio",
+          buttons: { langTo: "中文", theme: "Toggle theme" },
+          nav: { tools: "Tools", services: "Services", contact: "Contact", about_btn: "About" },
+          hero: {
+            title: "About",
+            subtitle: "I build VBA / Power Automate / Python / SQL automations to make repetitive work stable, faster, and easy to hand over."
+          },
+          summary: {
+            title: "Overview",
+            p1: "I currently work in the Netherlands on logistics data and systems: building automation to reduce manual input and errors, creating SQL/BI reporting for warehouse visibility, and supporting WMS implementation & system integration to deliver cross‑functionally.",
+            p2: "My preferred delivery style: break requirements into verifiable modules, ship a usable version first, iterate quickly, and hand over with runnable scripts + documentation + clear usage notes."
+          },
+          skills: { title: "Skills & Tooling", software: "Software", domain: "Domain", methods: "Methods" },
+          exp: {
+            title: "Experience",
+            cts: {
+              title: "Logistic Data Specialist · CTS (Netherlands)",
+              meta: "Apr 2024 – Present",
+              b1: "Built Python/VBA automation tools, cutting manual input by ~50% and reducing error rates by ~98%.",
+              b2: "Developed custom SQL reports in WMS (inbound/outbound dashboards, real‑time efficiency KPIs) to improve warehouse visibility and decisions.",
+              b3: "Drove two full‑lifecycle WMS implementations: owned scope, SOP design, IT integration, translated business needs into specs, and coordinated cross‑functional delivery on time and budget.",
+              b4: "Supported four system integration projects: requirements, timeline control, stakeholder coordination, ensuring alignment with business objectives.",
+              b5: "Oversaw end‑to‑end warehouse logistics support (inbound forecasting, transport order issuance, real‑time inventory control) and calculated monthly/annual KPIs to drive performance."
+            },
+            momentum: {
+              title: "Data Science Research Intern (House Price Prediction) · Momentum Technologies BV (Netherlands)",
+              meta: "Jun 2023 – Nov 2023",
+              b1: "Cleaned and processed 18,000+ Utrecht housing records (2018–2022) from funda.nl: missing values, feature encoding, and outlier filtering.",
+              b2: "Reviewed 80+ academic papers on traditional and machine learning models to design a hybrid prediction approach.",
+              b3: "Built and compared 4 ML models (XGBoost, Random Forest, ANN, Linear Regression), tuning hyperparameters and evaluating with MAE/RMSE.",
+              b4: "Refined variable selection through comparative analysis, improving accuracy by ~5% while optimizing cost and efficiency."
+            }
+          },
+          edu: {
+            title: "Education",
+            eur: {
+              title: "Erasmus University Rotterdam · MSc in Economics and Business",
+              meta: "Data Science and Marketing Analytics · Sep 2022 – Nov 2023 · Rotterdam, NL",
+              b1: "Training: R for data analysis, machine learning model building, and deep learning exercises.",
+              b2: "Thesis: “Investigating the variable importance for house price prediction in Utrecht, Netherlands.”"
+            },
+            sufe: {
+              title: "Shanghai University of Finance and Economics · BSc in Economics (Finance)",
+              meta: "Shanghai, China",
+              b1: "Selected coursework: Mathematical Analysis, Excel in Economic Management."
+            }
+          },
+          proj: {
+            title: "Selected Projects",
+            web: {
+              title: "Personal Web App Projects – xtoolshub.com",
+              meta: "Deployed at xtoolshub.com · Jun 2024",
+              b1: "Developed and deployed interactive web tools using Streamlit and HTML/JavaScript, hosted on Cloudflare Pages and Streamlit Cloud.",
+              b2: "Built an HTML clothing recommender that fetches live weather data via API, analyzes temperature, and suggests outfits for the day.",
+              b3: "Created a Streamlit utility for real‑time data processing, allowing users to run Python scripts in‑browser through a friendly UI.",
+              b4: "Implemented dual‑language support (English/Chinese) and light/dark theme toggling for accessibility."
+            },
+            dhl: {
+              title: "Python Integration with DHL Shipment – ETA & ATA Tracker",
+              meta: "Jun 2024",
+              b1: "Automated retrieval of shipment ETA/ATA via DHL public API using Python, parsed JSON responses, and loaded results into dataframes for analysis.",
+              b2: "Built VBA macros to compute delivery KPIs (on‑time rate, average delay) and generate monitoring reports for dispatch performance."
+            },
+            vba: {
+              title: "VBA Automated Financial Reconciliation & Billing – Cost Matching and Invoicing",
+              meta: "Feb 2025",
+              b1: "Developed VBA tools to import and match shipment data with transport rate tables and calculate per‑shipment costs accurately.",
+              b2: "Generated invoices automatically by retrieving customer pricing, filling line items, and compiling summary reports.",
+              b3: "Reduced manual billing time by 70%+ and improved accuracy by removing human error."
+            }
+          },
+          contact: {
+            title: "Contact",
+            subtitle: "Please find my email below, I will reply in 24h-48h",
+            note: "Please include your detailed requirements or contact info in the email for follow-up."
+          },
+          footer: { left: "© Ryan Studio", right: "Automation • Data • Delivery" }
+        }
+      };
+
+      function getLang() {
+        try { return localStorage.getItem(LS.lang) || "cn"; } catch (e) { return "cn"; }
+      }
+      function setLang(l) {
+        try { localStorage.setItem(LS.lang, l); } catch (e) {}
+      }
+
+      function applyLang(lang) {
+        const dict = I18N[lang] || I18N.cn;
+        document.documentElement.lang = dict.htmlLang;
+        document.title = dict.title;
+
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+          const key = el.getAttribute("data-i18n");
+          const parts = key.split(".");
+          let cur = dict;
+          for (const p of parts) cur = (cur && cur[p] != null) ? cur[p] : null;
+          if (typeof cur === "string") el.textContent = cur;
+        });
+
+        const langBtn = document.getElementById("langToggleBtn");
+        if (langBtn) langBtn.textContent = dict.buttons.langTo;
+
+        const themeBtn = document.getElementById("themeToggleBtn");
+        if (themeBtn) themeBtn.textContent = dict.buttons.theme;
+      }
+
+      function getTheme() {
+        try { return localStorage.getItem(LS.theme) || "light"; } catch (e) { return "light"; }
+      }
+      function setTheme(t) {
+        try { localStorage.setItem(LS.theme, t); } catch (e) {}
+      }
+
+      function applyTheme(theme) {
+        const light = theme === "light";
+        document.body.classList.toggle("light-mode", light);
+      }
+
+      // init
+      const initLang = getLang();
+      const initTheme = getTheme(); // default ensured to be light in <head>
+      applyTheme(initTheme);
+      applyLang(initLang);
+
+      // bindings
+      document.getElementById("langToggleBtn")?.addEventListener("click", () => {
+        const next = (getLang() === "cn") ? "en" : "cn";
+        setLang(next);
+        applyLang(next);
+      });
+
+      document.getElementById("themeToggleBtn")?.addEventListener("click", () => {
+        const next = (getTheme() === "light") ? "dark" : "light";
+        setTheme(next);
+        applyTheme(next);
+      });
+    })();
+  </script>
 </body>
 </html>
