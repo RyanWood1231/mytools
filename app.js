@@ -317,28 +317,94 @@ function applyLanguage() {
 
   const setText = (id, v) => {
     const el = document.getElementById(id);
-    if (el) el.textContent = v;
+    if (el && v !== undefined && v !== null) el.textContent = v;
+  };
+  const setHTML = (id, v) => {
+    const el = document.getElementById(id);
+    if (!el || v === undefined || v === null) return;
+    // 支持 
+ 自动换行
+    el.innerHTML = String(v).replace(/
+/g, "<br/>");
   };
   const setPH = (id, v) => {
     const el = document.getElementById(id);
-    if (el) el.placeholder = v;
+    if (el && v !== undefined && v !== null) el.placeholder = v;
   };
 
+  // html lang + <title>
   document.documentElement.lang = dict.htmlLang;
+  const titleEl = document.getElementById("docTitle");
+  if (titleEl) titleEl.textContent = dict.pageTitle;
+  document.title = dict.pageTitle;
 
-  setText("pageTitle", dict.pageTitle);
-  setPH("searchInput", dict.searchPlaceholder);
+  // Top nav
+  setText("navTools", dict.nav.tools);
+  setText("navServices", dict.nav.services);
+  setText("navContact", dict.nav.contact);
 
+  // Buttons
   setText("langToggleBtn", dict.buttons.langTo);
   setText("themeToggleBtn", dict.buttons.theme);
   setText("authorBtn", dict.buttons.author);
 
+  // Hero
+  setText("pageTitle", dict.hero.small);
+  setHTML("heroHeadline", dict.hero.title);
+  setHTML("heroSub", dict.hero.desc);
+  setText("ctaPrimary", dict.hero.primary);
+  setText("ctaGhost", dict.hero.secondary);
 
+  // Deliver panel
+  setText("deliverTitle", dict.deliver.title);
+  setText("deliver1", "✅ " + dict.deliver.items[0]);
+  setText("deliver2", "✅ " + dict.deliver.items[1]);
+  setText("deliver3", "✅ " + dict.deliver.items[2]);
+  setText("mini1k", dict.deliver.leftTag);
+  setText("mini1t", dict.deliver.leftValue);
+  setText("mini2k", dict.deliver.rightTag);
+  setText("mini2t", dict.deliver.rightValue);
+
+  // Services
+  setText("servicesTitle", dict.services.title);
+  setText("servicesLink", dict.services.more);
+  setText("svc1Title", dict.services.cards[0].title);
+  setText("svc1Desc", dict.services.cards[0].desc);
+  setText("svc2Title", dict.services.cards[1].title);
+  setText("svc2Desc", dict.services.cards[1].desc);
+  setText("svc3Title", dict.services.cards[2].title);
+  setText("svc3Desc", dict.services.cards[2].desc);
+
+  // Tools section
+  setText("toolsTitle", dict.tools.title);
+  setPH("searchInput", dict.searchPlaceholder);
+
+  // Contact
+  setText("contactTitle", dict.contact.title);
+  setHTML("contactDesc", dict.contact.desc);
+  setText("chip1", dict.contact.tags[0]);
+  setText("chip2", dict.contact.tags[1]);
+  setText("chip3", dict.contact.tags[2]);
+  setText("chip4", dict.contact.tags[3]);
+  setText("contactMore", dict.contact.helper);
+
+  // 兼容旧版本：mailboxHint 可能不存在，优先更新 mailboxValue
+  setText("mailboxLabel", "联系方式");
+  const mailboxEl =
+    document.getElementById("mailboxHint") ||
+    document.getElementById("mailboxValue");
+  if (mailboxEl && mailboxEl.textContent) {
+    // 不覆盖你手写的邮箱，只在需要时更新提示
+  }
+
+  // Author modal (如果页面没有 modal，这里也不会报错)
   setText("authorTitle", dict.author.title);
-  setText("authorText", dict.author.text);
+  setHTML("authorText", dict.author.text);
 
+  // Re-render tools list
   renderTools();
   filterTools();
+
   localStorage.setItem(LS_KEYS.lang, currentLang);
 }
 
