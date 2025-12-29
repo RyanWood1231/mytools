@@ -534,3 +534,19 @@ body.light-mode .contact__textarea{
 .tool-card.is-clickable{cursor:pointer;}
 .tool-card.is-clickable:focus{outline:3px solid rgba(255,212,0,.55); outline-offset:3px;}
 .tool-card.is-disabled{opacity:.65;}
+
+
+/* mailbox placeholder */
+.contact__mailbox{
+  font-weight: 900;
+  letter-spacing: .2px;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px dashed var(--line);
+  background: rgba(255,255,255,.03);
+  word-break: break-all;
+}
+body.light-mode .contact__mailbox{
+  border-color: rgba(0,0,0,.18);
+  background: rgba(255,255,255,.85);
+}
