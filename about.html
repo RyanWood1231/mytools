@@ -20,67 +20,52 @@
 
   <!-- About page readability guarantees (no need to modify style.css) -->
   <style>
-    /* Use existing site structure, but guarantee dark-mode readability */
-    body:not(.light-mode) .tool-surface,
-    body:not(.light-mode) .tool-surface--light {
-      color: rgba(255,255,255,.92);
-    }
-    body:not(.light-mode) .tool-surface p,
-    body:not(.light-mode) .tool-surface li,
-    body:not(.light-mode) .tool-surface span,
-    body:not(.light-mode) .tool-surface a,
-    body:not(.light-mode) .tool-surface--light p,
-    body:not(.light-mode) .tool-surface--light li,
-    body:not(.light-mode) .tool-surface--light span,
-    body:not(.light-mode) .tool-surface--light a {
-      color: rgba(255,255,255,.82);
-    }
-    body:not(.light-mode) .muted { color: rgba(255,255,255,.70) !important; }
 
-    /* Make dashed boxes visible on dark */
-    body:not(.light-mode) .dashbox {
-      border-color: rgba(255,255,255,.22) !important;
-      background: rgba(255,255,255,.04);
-    }
+    /* About page: keep same design language as homepage, add breathing room */
+    .about-wrap{ padding: 0; }
 
     /* Responsive grids */
-    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-    @media (max-width: 980px){ .grid-3 { grid-template-columns:1fr; } }
+    .grid-3{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    @media (max-width: 980px){ .grid-3{ grid-template-columns:1fr; } }
 
-    .section-title { margin:0 0 8px; }
-    .section-gap { height:14px; }
+    .section-title{ margin:0 0 10px; }
+    .section-gap{ height:16px; }
 
-    .tagrow { display:flex; flex-wrap:wrap; gap:8px; }
-    .tag {
+    .tagrow{ display:flex; flex-wrap:wrap; gap:8px; }
+    .tag{
       display:inline-flex; align-items:center; gap:6px;
       padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(17,24,39,.12);
-      background: rgba(255,255,255,.55);
-      font-size: 13px;
-    }
-    body:not(.light-mode) .tag{
-      border-color: rgba(255,255,255,.18);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.86);
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.03);
+      font-size:13px;
+      color:#111;
     }
 
-    .timeline { display:grid; gap:10px; }
-    .titem { border:1px dashed rgba(17,24,39,.18); border-radius:14px; padding:14px; }
-    body:not(.light-mode) .titem { border-color: rgba(255,255,255,.22); }
-    .titem h3 { margin:0 0 6px; font-size:16px; }
-    .titem .meta { font-size:13px; }
-    .titem ul { margin:10px 0 0; padding-left:18px; line-height:1.85; }
+    .timeline{ display:grid; gap:14px; }
+    .titem{
+      border:1px dashed rgba(0,0,0,.18);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: rgba(255,255,255,.98);
+    }
+    .titem h3{ margin:0 0 6px; font-size:16px; }
+    .titem .meta{ font-size:13px; }
+    .titem ul{ margin:10px 0 0; padding-left:18px; line-height:1.85; }
 
-    .hero-title { margin:0 0 10px; font-size:42px; letter-spacing:-.6px; }
-    .hero-sub { margin:0; line-height:1.7; max-width: 76ch; }
+    .hero-title{ margin:0 0 10px; font-size:42px; letter-spacing:-.6px; }
+    .hero-sub{ margin:0; line-height:1.7; max-width: 76ch; }
 
     /* Contact placeholder block */
-    .contact-box { line-height:1.9; }
-    .contact-box code { padding: 2px 6px; border-radius: 8px; background: rgba(17,24,39,.06); }
-    body:not(.light-mode) .contact-box code { background: rgba(255,255,255,.10); color: rgba(255,255,255,.92); }
+    .contact-box{ line-height:1.9; }
+    .contact-box code{
+      padding:2px 6px; border-radius:8px;
+      background: rgba(0,0,0,.06);
+      color:#111;
+    }
 
     /* Keep topbar buttons consistent */
-    .topbar__actions a.pill { text-decoration:none; }
+    .topbar__actions a.pill{ text-decoration:none; }
+
   </style>
 </head>
 
@@ -108,6 +93,7 @@
   </header>
 
   <main class="tool-shell">
+    <div class="container about-wrap">
     <section class="tool-surface--light tool-surface">
       <h1 class="hero-title" data-i18n="hero.title">关于我</h1>
       <p class="hero-sub muted" data-i18n="hero.subtitle">
@@ -281,6 +267,7 @@
         <span data-i18n="footer.right">Automation • Data • Delivery</span>
       </div>
     </section>
+      </div>
   </main>
 
   <!-- About page local scripts: theme + language (no dependency on app.js) -->
