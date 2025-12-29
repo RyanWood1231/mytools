@@ -319,14 +319,14 @@ function applyLanguage() {
     const el = document.getElementById(id);
     if (el && v !== undefined && v !== null) el.textContent = v;
   };
+
   const setHTML = (id, v) => {
     const el = document.getElementById(id);
     if (!el || v === undefined || v === null) return;
-    // 支持 
- 自动换行
-    el.innerHTML = String(v).replace(/
-/g, "<br/>");
+    // 支持自动换行（兼容 \n 和 \r\n）
+    el.innerHTML = String(v).replace(/\r?\n/g, "<br/>");
   };
+
   const setPH = (id, v) => {
     const el = document.getElementById(id);
     if (el && v !== undefined && v !== null) el.placeholder = v;
@@ -388,16 +388,11 @@ function applyLanguage() {
   setText("chip4", dict.contact.tags[3]);
   setText("contactMore", dict.contact.helper);
 
-  // 兼容旧版本：mailboxHint 可能不存在，优先更新 mailboxValue
-  setText("mailboxLabel", "联系方式");
-  const mailboxEl =
-    document.getElementById("mailboxHint") ||
-    document.getElementById("mailboxValue");
-  if (mailboxEl && mailboxEl.textContent) {
-    // 不覆盖你手写的邮箱，只在需要时更新提示
-  }
+  
+  if (dict.contact?.mailboxLabel) setText("mailboxLabel", dict.contact.mailboxLabel);
+  if (dict.contact?.mailboxHint) setText("mailboxHint", dict.contact.mailboxHint);
 
-  // Author modal (如果页面没有 modal，这里也不会报错)
+  // Author modal
   setText("authorTitle", dict.author.title);
   setHTML("authorText", dict.author.text);
 
@@ -407,6 +402,7 @@ function applyLanguage() {
 
   localStorage.setItem(LS_KEYS.lang, currentLang);
 }
+
 
 function openAuthorModal() {
   const modal = document.getElementById("authorModal");
