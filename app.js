@@ -2,7 +2,7 @@
  * A) 工具公共信息（无需翻译）
  *****************************************************************/
 const toolsBase = [
-  { id: "excel_ai",       icon: "📊", href: "excel_ai.html", enabled: true  },
+  { id: "excel_ai",       icon: "📊", href: "excel_ai.html", enabled: false }, 
   { id: "excel_cleanup",  icon: "🔧", href: "https://github.com/yourusername/excel-cleanup-tool", enabled: false },
   { id: "batch_copier",   icon: "🐍", href: "https://mytools-d4exbdecqsrzidtgsmoy7e.streamlit.app/", enabled: true },
   { id: "order_tracking", icon: "📦", href: "order_tracking.html", enabled: true },
@@ -244,19 +244,40 @@ function renderTools() {
     cta.target = base.enabled && /^https?:\/\//.test(base.href) ? "_blank" : "_self";
     cta.rel = cta.target === "_blank" ? "noopener noreferrer" : "";
 
-  
+    // Make whole card clickable only when enabled
     if (base.enabled) {
-      card.style.cursor = "pointer";
-      card.addEventListener("click", () => {
+      card.classList.add("is-clickable");
+      card.setAttribute("role", "link");
+      card.setAttribute("tabindex", "0");
+
+      const go = () => {
         if (/^https?:\/\//.test(base.href)) {
           window.open(base.href, "_blank", "noopener");
         } else {
           window.location.href = base.href;
         }
+      };
+
+      card.addEventListener("click", go);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          go();
+        }
       });
     } else {
-      card.classList.add("disabled");
+      // Disabled: show as a non-navigable card
+      card.classList.add("is-disabled");
+      card.setAttribute("aria-disabled", "true");
+
+      // Ensure CTA cannot navigate even if clicked
+      cta.removeAttribute("href");
+      cta.setAttribute("role", "button");
+      cta.setAttribute("aria-disabled", "true");
+      cta.tabIndex = -1;
+      cta.addEventListener("click", (e) => e.preventDefault());
     }
+
 
     card.appendChild(h2);
     card.appendChild(p);

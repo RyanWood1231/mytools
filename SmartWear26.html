@@ -54,7 +54,7 @@
               </select>
 
               <span class="tag" title="下雨时会更偏向防水外套/雨具">雨天加权</span>
-              <span class="mutedText">根据风格推荐穿搭功能仍在开发中，敬请期待~</span>
+              <span class="mutedText">风格偏好功能正在开发中，敬请期待~</span>
             </div>
           </section>
 
@@ -369,4 +369,57 @@
             e.preventDefault();
             const city = document.getElementById("cityInput").value.trim();
             const resultDiv = document.getElementById("result");
-            if (!city)
+            if (!city) return;
+
+            resultDiv.innerHTML = `<div class="loading">加载中，请稍候...</div>`;
+
+            try {
+              const { city: displayCity, min_temp, max_temp, rain_probability } = await fetchWeather(city);
+              const avg_temp = (min_temp + max_temp) / 2;
+              const raining = rain_probability > 50;
+
+              const titleHTML = `
+                <h3 style="margin:0 0 6px;">
+                  ${displayCity} 今日气温：<b>${min_temp.toFixed(1)}℃ - ${max_temp.toFixed(1)}℃</b>
+                </h3>
+                <div class="mutedText">降雨概率：${rain_probability}%（按 ${avg_temp.toFixed(1)}℃ 估算）</div>
+              `;
+
+              const adjustedTemp = avg_temp - (raining ? 0.8 : 0.0);
+              renderResult("result", titleHTML, adjustedTemp, raining);
+            } catch (err) {
+              resultDiv.innerHTML = `<div class="mutedText" style="color:#b42318;">${err.message}</div>`;
+            }
+          });
+
+          document.getElementById("manualForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const val = parseFloat(document.getElementById("manualTemp").value);
+            if (Number.isNaN(val)) return;
+
+            const titleHTML = `<h3 style="margin:0 0 6px;">输入气温：<b>${val.toFixed(1)}℃</b></h3>`;
+            renderResult("manualResult", titleHTML, val, false);
+          });
+        </script>
+      </div>
+    </div>
+  </main>
+
+  <div id="authorModal" class="modal" aria-hidden="true">
+    <div id="authorModalContent" class="modal__content" role="dialog" aria-modal="true" aria-labelledby="authorTitle">
+      <div class="modal__head">
+        <h3 id="authorTitle">关于作者</h3>
+        <button id="authorClose" class="modal__close" aria-label="Close">✕</button>
+      </div>
+      <p id="authorText" class="modal__body">嗨，这里是 Ryan。</p>
+      <div class="modal__actions">
+        <a class="btn btn--primary" href="index.html#contact">Contact</a>
+        <a class="btn" href="index.html#tools">Tools</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ 确保路径正确：SmartWear26.html 和 app.js 必须在同一目录；不在同一目录就改成 ../app.js 或 /app.js -->
+  <script src="app.js"></script>
+</body>
+</html>
