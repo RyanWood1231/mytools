@@ -6,114 +6,20 @@
   <title>SmartWear 26</title>
   <link rel="icon" href="Logo.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
-  body {
-    margin: 0; padding: 0;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    font-family: 'Orbitron', sans-serif;
-    color: #00ffea;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-  header {
-    margin: 40px 0 20px;
-    font-size: 2.5rem;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px #00fff0;
-  }
-  form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  input[type="text"], input[type="number"] {
-    padding: 10px 15px;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    border: none;
-    outline: none;
-    width: 200px;
-    background: transparent;
-    color: #00fff0;
-    box-shadow: 0 0 5px #00fff0;
-    transition: box-shadow 0.3s ease;
-  }
-  input[type="text"]:focus, input[type="number"]:focus {
-    box-shadow: 0 0 15px #00ffea;
-  }
-  button {
-    background: transparent;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 18px;
-    font-weight: bold;
-    color: #003f3f;
-    cursor: pointer;
-    box-shadow: 0 0 15px #00fff0;
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: transparent;
-  }
-  #result, #manualResult {
-    max-width: 600px;
-    background: rgba(0, 255, 234, 0.1);
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px #00fff0;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-  .loading {
-    font-size: 1.2rem;
-    color: #00ccbb;
-    animation: pulse 1.5s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  .highlight {
-    color: #00ffd6;
-    font-weight: 700;
-  }
-  #log {
-    max-width: 600px;
-    background: transparent;
-    color: #00aa88;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 0.9rem;
-    white-space: pre-wrap;
-    min-height: 50px;
-  }
-  h3.section-title {
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-    border-bottom: 1px solid #00fff0;
-    padding-bottom: 4px;
-  }
-
-  </style>
 </head>
-<body class="tool-page">
+
+<body class="tool-page smartwear">
   <header class="topbar">
     <div class="container topbar__inner">
       <a class="brand" href="index.html" aria-label="Home">
-        <span class="brand__dot" aria-hidden="true"></span>
-        <span id="brandText">Ryan • Automation</span>
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text" id="brandText">Ryan Studio</span>
       </a>
 
       <nav class="navlinks" aria-label="Primary">
-        <a id="navTools" href="index.html#tools">Tools</a>
-        <a id="navAbout" href="about.html">About</a>
-        <a id="navContact" href="index.html#contact">Contact</a>
+        <a class="navlink" id="navTools" href="index.html#tools">Tools</a>
+        <a class="navlink" id="navAbout" href="about.html">About</a>
+        <a class="navlink" id="navContact" href="index.html#contact">Contact</a>
       </nav>
 
       <div class="topbar__actions">
@@ -125,220 +31,414 @@
   </header>
 
   <main class="tool-shell">
-    <div class="tool-surface--light tool-surface">
-      
-<header>26度穿衣助手</header>
-<section>
-<h3 class="section-title">城市天气查询</h3>
-<form id="cityForm">
-<input id="cityInput" placeholder="输入城市名称" required="" type="text"/>
-<button type="submit">查询天气</button>
-</form>
-<div id="result"></div>
-</section>
-<section>
-<h3 class="section-title">手动输入气温</h3>
-<form id="manualForm">
-<input id="manualTemp" placeholder="输入气温 (℃)" required="" type="number"/>
-<button type="submit">获取穿衣推荐</button>
-</form>
-<div id="manualResult"></div>
-</section>
-<section>
-<h3 class="section-title">调试日志</h3>
-<div id="log">无日志信息</div>
-</section>
-<script>
-  const targetTemp = 26;
+    <div class="container">
+      <div class="tool-surface tool-surface--light">
+        <h1 class="pageTitle">26℃ 穿衣助手</h1>
+        <p class="mutedText">
+          输入城市（自动查天气）或手动输入温度。
+        </p>
 
-  const clothes = [
-    {name: "短袖T恤", val: 1},
-    {name: "长袖T恤", val: 1.5},
-    {name: "针织开衫", val: 2},
-    {name: "卫衣", val: 3},
-    {name: "薄外套", val: 3},
-    {name: "厚毛衣", val: 4},
-    {name: "抓绒衣", val: 5},
-    {name: "薄呢外套", val: 5},
-    {name: "厚羽绒服", val: 9},
-    {name: "棉服", val: 6},
-    {name: "薄裤子", val: 1},
-    {name: "加绒裤", val: 3},
-    {name: "羽绒裤", val: 5},
-    {name: "围巾", val: 1},
-    {name: "厚围巾", val: 2},
-    {name: "帽子", val: 1},
-    {name: "厚帽子", val: 2}
-  ];
+        <div class="grid">
+          <!-- Preferences -->
+          <section class="card" aria-label="Preferences">
+            <div class="row">
+              <label class="tag" for="styleSelect">风格偏好</label>
+              <select id="styleSelect" class="field" style="max-width: 260px;">
+                <option value="any" selected>通用（不限制）</option>
+                <option value="minimal">极简</option>
+                <option value="commute">通勤</option>
+                <option value="sporty">运动</option>
+                <option value="street">街头</option>
+                <option value="outdoor">户外</option>
+              </select>
 
-  function logMsg(msg) {
-    const logDiv = document.getElementById('log');
-    logDiv.textContent = msg;
-  }
+              <span class="tag" title="下雨时会更偏向防水外套/雨具">雨天加权</span>
+              <span class="mutedText">风格功能开发中，敬请期待~</span>
+            </div>
+          </section>
 
-  function getCombinations(temperature, maxItems=5) {
-    const needWarmth = targetTemp - temperature;
-    let combos = [];
+          <!-- City weather -->
+          <section class="card" aria-label="City weather">
+            <h3 style="margin:0 0 10px;">城市天气查询</h3>
+            <form id="cityForm" class="row">
+              <input id="cityInput" class="field" placeholder="输入城市名称（中文/英文均可）" required type="text"/>
+              <button class="btn btn--primary" type="submit">查询天气并推荐</button>
+            </form>
+            <div id="result" class="result"></div>
+          </section>
 
-    function backtrack(start, path, warmthSum) {
-      if (path.length > maxItems) return;
-      if (Math.abs(warmthSum - needWarmth) <= 1) {
-        combos.push({ items: [...path], total: warmthSum });
-      }
-      for (let i = start; i < clothes.length; i++) {
-        path.push(clothes[i]);
-        backtrack(i + 1, path, warmthSum + clothes[i].val);
-        path.pop();
-      }
-    }
+          <!-- Manual temp -->
+          <section class="card" aria-label="Manual temperature">
+            <h3 style="margin:0 0 10px;">手动输入气温</h3>
+            <form id="manualForm" class="row">
+              <input id="manualTemp" class="field" placeholder="输入气温 (℃)" required type="number" step="0.1"/>
+              <button class="btn btn--primary" type="submit">获取穿衣推荐</button>
+            </form>
+            <div id="manualResult" class="result"></div>
+          </section>
 
-    backtrack(0, [], 0);
-    combos.sort((a,b) => Math.abs(a.total - needWarmth) - Math.abs(b.total - needWarmth));
-    return combos.slice(0, 3);
-  }
+          <!-- Debug log -->
+          <section class="card" aria-label="Debug log">
+            <h3 style="margin:0 0 10px;">调试日志</h3>
+            <div id="log" class="mutedText">无日志信息</div>
+          </section>
+        </div>
 
-  // --- ✅ Open-Meteo：城市 -> 经纬度 ---
-  async function geocodeCity(city) {
-    const geoUrl =
-      `https://geocoding-api.open-meteo.com/v1/search` +
-      `?name=${encodeURIComponent(city)}` +
-      `&count=1&language=zh&format=json`;
+        <script>
+          /***********************
+           * SmartWear v2
+           ***********************/
+          const targetTemp = 26;
 
-    const res = await fetch(geoUrl);
-    logMsg(`Geocoding 状态码: ${res.status}`);
-    if (!res.ok) throw new Error(`城市解析失败，状态码: ${res.status}`);
+          // ---- wardrobe (expanded & structured) ----
+          // warmth: “相对保暖贡献”，数值越高越保暖
+          // styles: any/minimal/commute/sporty/street/outdoor
+          const wardrobe = {
+            baseTop: [
+              { name: "短袖T恤", warmth: 1.0, styles: ["any","minimal","sporty","street"] },
+              { name: "POLO衫", warmth: 1.2, styles: ["any","commute","minimal"] },
+              { name: "短袖衬衫", warmth: 1.1, styles: ["any","commute","street"] },
+              { name: "长袖T恤", warmth: 1.8, styles: ["any","minimal","sporty","street"] },
+              { name: "薄款打底衫", warmth: 2.0, styles: ["any","minimal","commute"] },
+              { name: "薄款衬衫", warmth: 2.0, styles: ["any","commute","minimal"] },
+              { name: "保暖内衣上衣", warmth: 3.0, styles: ["any","outdoor","minimal"] }
+            ],
+            midTop: [
+              { name: "针织开衫", warmth: 2.6, styles: ["any","commute","minimal"] },
+              { name: "薄毛衣", warmth: 3.0, styles: ["any","commute","minimal"] },
+              { name: "卫衣", warmth: 3.2, styles: ["any","sporty","street"] },
+              { name: "法兰绒衬衫外搭", warmth: 2.8, styles: ["any","street","outdoor"] },
+              { name: "轻薄羽绒马甲", warmth: 3.6, styles: ["any","outdoor","commute"] },
+              { name: "抓绒上衣", warmth: 4.0, styles: ["any","outdoor","sporty"] }
+            ],
+            outer: [
+              { name: "薄外套（防风）", warmth: 2.8, styles: ["any","sporty","outdoor","street"], rainOk: true },
+              { name: "牛仔夹克", warmth: 3.2, styles: ["any","street","minimal"] },
+              { name: "棒球夹克", warmth: 3.0, styles: ["any","street","sporty"] },
+              { name: "西装外套", warmth: 2.6, styles: ["commute","minimal"] },
+              { name: "风衣", warmth: 3.4, styles: ["commute","minimal","any"], rainOk: true },
+              { name: "呢子大衣", warmth: 5.0, styles: ["commute","minimal"] },
+              { name: "棉服", warmth: 6.0, styles: ["any","outdoor"] },
+              { name: "厚羽绒服", warmth: 8.5, styles: ["any","outdoor"] , rainOk: true }
+            ],
+            bottom: [
+              { name: "短裤", warmth: 0.6, styles: ["any","sporty","street"] },
+              { name: "薄款休闲长裤", warmth: 1.6, styles: ["any","minimal","commute"] },
+              { name: "牛仔裤", warmth: 2.0, styles: ["any","street","minimal"] },
+              { name: "运动长裤", warmth: 1.8, styles: ["any","sporty"] },
+              { name: "西裤", warmth: 1.8, styles: ["commute","minimal"] },
+              { name: "工装裤", warmth: 2.2, styles: ["street","outdoor","any"] },
+              { name: "加绒长裤", warmth: 3.4, styles: ["any","outdoor"] },
+              { name: "保暖秋裤（打底）", warmth: 2.4, styles: ["any","outdoor","minimal"], isBaseBottom: true }
+            ],
+            accessory: [
+              { name: "雨伞", warmth: 0.0, styles: ["any"], rainOnly: true },
+              { name: "防水外套/雨衣", warmth: 2.4, styles: ["any","outdoor"], rainOnly: true, rainOk: true },
+              { name: "帽子", warmth: 0.8, styles: ["any","street","sporty","outdoor"] },
+              { name: "围巾", warmth: 1.2, styles: ["any","commute","minimal"] },
+              { name: "手套", warmth: 1.2, styles: ["any","outdoor"] }
+            ]
+          };
 
-    const data = await res.json();
-    if (!data.results || data.results.length === 0) {
-      throw new Error("未找到该城市，请尝试更具体的名称（如：北京/上海/深圳）");
-    }
+          function logMsg(msg) {
+            document.getElementById("log").textContent = msg;
+          }
 
-    const r = data.results[0];
-    return {
-      name: r.name,
-      admin1: r.admin1,
-      country: r.country,
-      latitude: r.latitude,
-      longitude: r.longitude
-    };
-  }
+          function pickByStyle(items, style) {
+            if (!style || style === "any") return items.slice();
+            const hit = items.filter(x => (x.styles || []).includes(style));
+            // 允许回退：如果该风格太少，就混入通用
+            return hit.length >= 3 ? hit : items.slice();
+          }
 
-  // --- ✅ Open-Meteo：经纬度 -> 今日预报（不需要 key） ---
-  async function fetchWeather(city) {
-    try {
-      // 1) 城市转经纬度
-      const loc = await geocodeCity(city);
+          function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
 
-      // 2) 拉今日 min/max 与降水概率（daily）
-      const forecastUrl =
-        `https://api.open-meteo.com/v1/forecast` +
-        `?latitude=${loc.latitude}` +
-        `&longitude=${loc.longitude}` +
-        `&daily=temperature_2m_min,temperature_2m_max,precipitation_probability_max` +
-        `&timezone=auto`;
+          // --- core: build 3 outfit plans ---
+          function recommendOutfits(temp, { raining=false, style="any" } = {}) {
+            // 需要的“额外保暖值”
+            const need = clamp(targetTemp - temp + (raining ? 1.0 : 0.0), 0, 14);
 
-      const res = await fetch(forecastUrl);
-      logMsg(`Forecast 状态码: ${res.status}`);
-      if (!res.ok) throw new Error(`获取天气失败，状态码: ${res.status}`);
+            const baseTops = pickByStyle(wardrobe.baseTop, style);
+            const midTops  = pickByStyle(wardrobe.midTop, style);
+            const outers   = pickByStyle(wardrobe.outer, style);
+            const bottoms  = pickByStyle(wardrobe.bottom, style);
+            const accs     = pickByStyle(wardrobe.accessory, style);
 
-      const data = await res.json();
+            // ---- bottom rule: always include a bottom (and optionally base-bottom if cold) ----
+            function chooseBottom(targetWarmth) {
+              // 热：短裤/薄裤；冷：牛仔/加绒；很冷：秋裤+外裤
+              let useBaseBottom = targetWarmth >= 5.5; // 很冷才考虑秋裤
+              const baseBottom = bottoms.find(b => b.isBaseBottom);
+              const outerBottomCandidates = bottoms.filter(b => !b.isBaseBottom);
 
-      const daily = data.daily;
-      if (!daily || !daily.temperature_2m_min || !daily.temperature_2m_max) {
-        throw new Error("天气数据格式异常（daily 缺失）");
-      }
+              // 先选外裤
+              const scored = outerBottomCandidates
+                .map(b => ({ b, score: Math.abs((b.warmth) - clamp(targetWarmth*0.35, 0.5, 3.6)) }))
+                .sort((x,y) => x.score - y.score);
 
-      const min_temp = Number(daily.temperature_2m_min[0]);
-      const max_temp = Number(daily.temperature_2m_max[0]);
+              const chosenOuter = scored[0]?.b || outerBottomCandidates[0];
 
-      // 有些地区/模型可能不给降水概率，做个兜底
-      let rain_probability = daily.precipitation_probability_max
-        ? Number(daily.precipitation_probability_max[0])
-        : 0;
-      if (!Number.isFinite(rain_probability)) rain_probability = 0;
+              const items = [];
+              let warmth = 0;
 
-      // 返回“更完整的城市显示名”
-      const displayCity = [loc.name, loc.admin1, loc.country].filter(Boolean).join(" · ");
+              // 秋裤不单独出现，必须配外裤
+              if (useBaseBottom && baseBottom) {
+                items.push(baseBottom);
+                warmth += baseBottom.warmth;
+              }
+              items.push(chosenOuter);
+              warmth += chosenOuter.warmth;
 
-      return { city: displayCity, min_temp, max_temp, rain_probability };
-    } catch (e) {
-      logMsg(`请求错误: ${e.message}`);
-      throw e;
-    }
-  }
+              return { items, warmth };
+            }
 
-  function renderResult(city, min_temp, max_temp, rain_probability, combos, targetWarmth) {
-    let rainText = `降雨概率：${rain_probability}%。`;
-    let raining = rain_probability > 50;
+            // ---- top layering rule: base -> (optional mid) -> (optional outer) ----
+            function chooseTopLayers(targetWarmth) {
+              // 根据 targetWarmth 决定层数
+              const wantOuter = targetWarmth >= 4.0;
+              const wantMid   = targetWarmth >= 2.2;
 
-    let html = `<h2>${city} 今日气温范围: <span class="highlight">${min_temp.toFixed(1)}℃ - ${max_temp.toFixed(1)}℃</span></h2>`;
-    html += `<p>${rainText}</p>`;
-    html += `<p>目标保暖值 ≈ <span class="highlight">${targetWarmth.toFixed(1)}</span>℃</p>`;
-    html += `<h3>推荐穿衣组合：</h3><ul>`;
-    combos.forEach((combo, i) => {
-      const itemsStr = combo.items.map(c => c.name).join(" + ");
-      html += `<li><strong>方案${i+1}:</strong> ${itemsStr} ，总保暖值: ${combo.total.toFixed(1)}℃</li>`;
-    });
-    html += `</ul>`;
-    if (raining) {
-      html += `<p style="color:#ff6666;font-weight:bold;">提示：降雨概率较高，建议携带雨具和防水外套！</p>`;
-    }
-    document.getElementById('result').innerHTML = html;
-  }
+              // base top：热就短袖，凉就长袖/打底，冷就保暖内衣
+              let basePool = baseTops;
+              if (targetWarmth <= 1.2) basePool = baseTops.filter(x => ["短袖T恤","POLO衫","短袖衬衫"].includes(x.name));
+              else if (targetWarmth <= 3.0) basePool = baseTops.filter(x => ["长袖T恤","薄款打底衫","薄款衬衫"].includes(x.name));
+              else basePool = baseTops.filter(x => x.name.includes("保暖内衣") || x.name.includes("打底"));
 
-  function renderManualResult(temp) {
-    const targetWarmth = targetTemp - temp;
-    const combos = getCombinations(temp);
-    let html = `<h2>输入气温: <span class="highlight">${temp.toFixed(1)}℃</span></h2>`;
-    html += `<p>无降雨信息，默认天气干爽。</p>`;
-    html += `<p>目标保暖值 ≈ <span class="highlight">${targetWarmth.toFixed(1)}</span>℃</p>`;
-    html += `<h3>推荐穿衣组合：</h3><ul>`;
-    combos.forEach((combo, i) => {
-      const itemsStr = combo.items.map(c => c.name).join(" + ");
-      html += `<li><strong>方案${i+1}:</strong> ${itemsStr} ，总保暖值: ${combo.total.toFixed(1)}℃</li>`;
-    });
-    html += `</ul>`;
-    document.getElementById('manualResult').innerHTML = html;
-  }
+              if (basePool.length === 0) basePool = baseTops;
 
-  document.getElementById('cityForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const cityInput = document.getElementById('cityInput');
-    const city = cityInput.value.trim();
-    const resultDiv = document.getElementById('result');
-    if (!city) return;
+              const base = basePool[Math.floor(Math.random() * basePool.length)];
 
-    resultDiv.innerHTML = '<p class="loading">加载中，请稍候...</p>';
+              const items = [base];
+              let warmth = base.warmth;
 
-    try {
-      const { city: displayCity, min_temp, max_temp, rain_probability } = await fetchWeather(city);
+              // mid layer：避免出现“短袖+长袖”这种同层互套（这里 mid 都是开衫/卫衣/毛衣等外加层）
+              if (wantMid) {
+                const mid = midTops[Math.floor(Math.random() * midTops.length)];
+                items.push(mid);
+                warmth += mid.warmth;
+              }
 
-      const avg_temp = (min_temp + max_temp) / 2;
-      const raining = rain_probability > 50;
-      let adjustedTemp = avg_temp;
-      if (raining) adjustedTemp -= 1;
-      const targetWarmth = targetTemp - adjustedTemp + (raining ? 1 : 0);
+              if (wantOuter) {
+                let outerPool = outers;
+                // 雨天优先 rainOk 的外套
+                if (raining) {
+                  const rainOk = outers.filter(o => o.rainOk);
+                  if (rainOk.length) outerPool = rainOk;
+                }
+                const outer = outerPool[Math.floor(Math.random() * outerPool.length)];
+                items.push(outer);
+                warmth += outer.warmth;
+              }
 
-      const combos = getCombinations(adjustedTemp);
-      renderResult(displayCity, min_temp, max_temp, rain_probability, combos, targetWarmth);
-    } catch (err) {
-      resultDiv.innerHTML = `<p style="color:#ff5555;">${err.message}</p>`;
-    }
-  });
+              return { items, warmth };
+            }
 
-  document.getElementById('manualForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const tempInput = document.getElementById('manualTemp');
-    const val = parseFloat(tempInput.value);
-    if (isNaN(val)) return;
-    renderManualResult(val);
-  });
-</script>
+            function chooseAccessories(targetWarmth) {
+              const items = [];
+              let warmth = 0;
 
+              if (raining) {
+                const rainCandidates = accs.filter(a => a.rainOnly);
+                // 雨具至少给一个
+                if (rainCandidates.length) {
+                  const pick = rainCandidates[Math.floor(Math.random() * rainCandidates.length)];
+                  items.push(pick);
+                } else {
+                  items.push({ name: "雨伞", warmth: 0.0 });
+                }
+              }
+
+              if (targetWarmth >= 6.5) {
+                const coldSet = accs.filter(a => !a.rainOnly && ["围巾","手套","帽子"].includes(a.name));
+                // 选 1~2 件
+                if (coldSet.length) {
+                  items.push(coldSet[Math.floor(Math.random() * coldSet.length)]);
+                  if (Math.random() > 0.45) items.push(coldSet[Math.floor(Math.random() * coldSet.length)]);
+                }
+              }
+
+              warmth = items.reduce((s,x) => s + (x.warmth || 0), 0);
+              return { items, warmth };
+            }
+
+            // 生成多套：每套都“上衣层 + 裤子层 + 配件”
+            const plans = [];
+            for (let i = 0; i < 3; i++) {
+              const bottom = chooseBottom(need);
+              const top = chooseTopLayers(need);
+              const acc = chooseAccessories(need);
+
+              const totalWarmth = bottom.warmth + top.warmth + acc.warmth;
+              plans.push({
+                top: top.items,
+                bottom: bottom.items,
+                acc: acc.items,
+                score: Math.abs(totalWarmth - need),
+                totalWarmth
+              });
+            }
+
+            // 去重（简单按文本）
+            const uniq = [];
+            const seen = new Set();
+            for (const p of plans.sort((a,b)=>a.score-b.score)) {
+              const key = [
+                p.top.map(x=>x.name).join("+"),
+                p.bottom.map(x=>x.name).join("+"),
+                p.acc.map(x=>x.name).join("+")
+              ].join("|");
+              if (!seen.has(key)) { uniq.push(p); seen.add(key); }
+            }
+
+            return { needWarmth: need, plans: uniq.slice(0,3) };
+          }
+
+          // --- Open-Meteo: city -> geocode ---
+          async function geocodeCity(city) {
+            const geoUrl =
+              `https://geocoding-api.open-meteo.com/v1/search` +
+              `?name=${encodeURIComponent(city)}` +
+              `&count=1&language=zh&format=json`;
+
+            const res = await fetch(geoUrl);
+            logMsg(`Geocoding 状态码: ${res.status}`);
+            if (!res.ok) throw new Error(`城市解析失败，状态码: ${res.status}`);
+
+            const data = await res.json();
+            if (!data.results || data.results.length === 0) {
+              throw new Error("未找到该城市，请尝试更具体的名称（如：北京/上海/深圳）");
+            }
+
+            const r = data.results[0];
+            return {
+              name: r.name,
+              admin1: r.admin1,
+              country: r.country,
+              latitude: r.latitude,
+              longitude: r.longitude
+            };
+          }
+
+          // --- Open-Meteo: lat/lon -> daily ---
+          async function fetchWeather(city) {
+            try {
+              const loc = await geocodeCity(city);
+
+              const forecastUrl =
+                `https://api.open-meteo.com/v1/forecast` +
+                `?latitude=${loc.latitude}` +
+                `&longitude=${loc.longitude}` +
+                `&daily=temperature_2m_min,temperature_2m_max,precipitation_probability_max` +
+                `&timezone=auto`;
+
+              const res = await fetch(forecastUrl);
+              logMsg(`Forecast 状态码: ${res.status}`);
+              if (!res.ok) throw new Error(`获取天气失败，状态码: ${res.status}`);
+
+              const data = await res.json();
+              const daily = data.daily;
+              if (!daily || !daily.temperature_2m_min || !daily.temperature_2m_max) {
+                throw new Error("天气数据格式异常（daily 缺失）");
+              }
+
+              const min_temp = Number(daily.temperature_2m_min[0]);
+              const max_temp = Number(daily.temperature_2m_max[0]);
+
+              let rain_probability = daily.precipitation_probability_max
+                ? Number(daily.precipitation_probability_max[0])
+                : 0;
+              if (!Number.isFinite(rain_probability)) rain_probability = 0;
+
+              const displayCity = [loc.name, loc.admin1, loc.country].filter(Boolean).join(" · ");
+              return { city: displayCity, min_temp, max_temp, rain_probability };
+            } catch (e) {
+              logMsg(`请求错误: ${e.message}`);
+              throw e;
+            }
+          }
+
+          function planToHTML(p, idx) {
+            const topStr = p.top.map(x=>x.name).join(" + ");
+            const bottomStr = p.bottom.map(x=>x.name).join(" + ");
+            const accStr = p.acc.length ? p.acc.map(x=>x.name).join(" + ") : "无";
+            return `
+              <li style="margin:10px 0;">
+                <b>方案${idx+1}</b>
+                <div class="mutedText" style="margin-top:6px;">
+                  上衣：${topStr}<br/>
+                  裤子：${bottomStr}<br/>
+                  配件：${accStr}<br/>
+                  估算保暖值：${p.totalWarmth.toFixed(1)}
+                </div>
+              </li>
+            `;
+          }
+
+          function renderResult(containerId, titleHTML, tempForNeed, raining) {
+            const style = document.getElementById("styleSelect").value || "any";
+            const { needWarmth, plans } = recommendOutfits(tempForNeed, { raining, style });
+
+            const el = document.getElementById(containerId);
+            if (!el) return;
+
+            const rainLine = raining
+              ? `<span class="tag">雨天</span><span class="mutedText">已开启雨天加权（更偏向防水外套/雨具）</span>`
+              : `<span class="tag">非雨天</span><span class="mutedText">默认干爽</span>`;
+
+            el.innerHTML = `
+              ${titleHTML}
+              <div style="margin:10px 0;">${rainLine}</div>
+              <div class="mutedText">目标保暖值（相对）≈ <b>${needWarmth.toFixed(1)}</b></div>
+              <h4 style="margin:12px 0 6px;">推荐穿搭（必含上衣+裤子）：</h4>
+              <ol style="margin:0; padding-left:18px;">
+                ${plans.map((p,i)=>planToHTML(p,i)).join("")}
+              </ol>
+            `;
+          }
+
+          document.getElementById("cityForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const city = document.getElementById("cityInput").value.trim();
+            const resultDiv = document.getElementById("result");
+            if (!city) return;
+
+            resultDiv.innerHTML = `<div class="loading">加载中，请稍候...</div>`;
+
+            try {
+              const { city: displayCity, min_temp, max_temp, rain_probability } = await fetchWeather(city);
+              const avg_temp = (min_temp + max_temp) / 2;
+              const raining = rain_probability > 50;
+
+              const titleHTML = `
+                <h3 style="margin:0 0 6px;">
+                  ${displayCity} 今日气温：<b>${min_temp.toFixed(1)}℃ - ${max_temp.toFixed(1)}℃</b>
+                </h3>
+                <div class="mutedText">降雨概率：${rain_probability}%（按 ${avg_temp.toFixed(1)}℃ 估算）</div>
+              `;
+
+              // 雨天体感略冷：这里把温度再下调一点点（更贴近你原来的思路）
+              const adjustedTemp = avg_temp - (raining ? 0.8 : 0.0);
+
+              renderResult("result", titleHTML, adjustedTemp, raining);
+            } catch (err) {
+              resultDiv.innerHTML = `<div class="mutedText" style="color:#b42318;">${err.message}</div>`;
+            }
+          });
+
+          document.getElementById("manualForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const val = parseFloat(document.getElementById("manualTemp").value);
+            if (Number.isNaN(val)) return;
+
+            const titleHTML = `<h3 style="margin:0 0 6px;">输入气温：<b>${val.toFixed(1)}℃</b></h3>`;
+            renderResult("manualResult", titleHTML, val, false);
+          });
+        </script>
+      </div>
     </div>
   </main>
 
-  <!-- Author modal -->
+  <!-- Author modal (keep compatible with app.js) -->
   <div id="authorModal" class="modal" aria-hidden="true">
     <div id="authorModalContent" class="modal__content" role="dialog" aria-modal="true" aria-labelledby="authorTitle">
       <div class="modal__head">
@@ -347,12 +447,5 @@
       </div>
       <p id="authorText" class="modal__body">嗨，这里是 Ryan。</p>
       <div class="modal__actions">
-        <a class="btn btn--yellow" href="index.html#contact">Contact</a>
-        <a class="btn btn--ghost" href="index.html#tools">Tools</a>
-      </div>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
-</html>
+        <a class="btn btn--primary" href="index.html#contact">Contact</a>
+        <a class="
